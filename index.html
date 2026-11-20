@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Norah · نورا</title>
+<meta name="description" content="They say if you want it done right, do it yourself. Now you can, twice. Norah is an AI agent for founders.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Norah · نورا">
+<meta property="og:description" content="They say if you want it done right, do it yourself. Now you can, twice.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050506;--ink:#f2f1ee;--dim:rgba(242,241,238,.64);--faint:rgba(242,241,238,.4);--line:rgba(242,241,238,.12);--card:rgba(255,255,255,.04)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.locked{overflow:hidden}
+a{color:inherit;text-decoration:none}
+.ar{font-family:"IBM Plex Sans Arabic",Inter,sans-serif}
+.mono{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+
+#field{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* gate */
+.gate{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:var(--bg);transition:opacity .9s ease}
+.gate.out{opacity:0;pointer-events:none}
+.gate-in{display:flex;flex-direction:column;align-items:center;gap:34px;text-align:center;padding:24px}
+.gate-mark{display:flex;align-items:center;gap:14px;font-weight:600;font-size:18px;letter-spacing:.01em}
+.gate-mark .ar{font-weight:600;font-size:22px;color:var(--dim)}
+.gate-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn{font:500 14px Inter,sans-serif;letter-spacing:.01em;padding:15px 24px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;transition:background .3s,border-color .3s,color .3s;min-height:48px}
+.btn:hover{border-color:rgba(255,255,255,.4)}
+.btn.solid{background:var(--ink);color:#0a0a0b;border-color:var(--ink)}
+.btn.solid:hover{background:#fff}
+.gate small{color:var(--faint);font-size:12.5px}
+
+/* intro lines */
+.intro{position:fixed;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;text-align:center;padding:0 6vw}
+.line{font-weight:300;font-size:clamp(34px,5.6vw,84px);line-height:1.12;letter-spacing:-.025em}
+.line .w{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(14px);transition:opacity .7s ease,filter .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.line .w.on{opacity:1;filter:none;transform:none}
+.line b{font-weight:600}
+.intro.fade .line{transition:opacity .6s ease,filter .6s ease;opacity:0;filter:blur(12px)}
+.skip{position:fixed;right:clamp(18px,4vw,44px);bottom:clamp(18px,4vh,36px);z-index:45;font-size:12.5px;color:var(--faint);background:none;border:0;cursor:pointer;padding:12px;font-family:Inter,sans-serif;letter-spacing:.04em}
+.skip:hover{color:var(--ink)}
+.sound{position:fixed;left:clamp(18px,4vw,44px);bottom:clamp(18px,4vh,36px);z-index:45;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--faint);background:none;border:0;cursor:pointer;padding:12px;font-family:"JetBrains Mono",monospace;letter-spacing:.14em}
+.sound i{display:flex;gap:2px;align-items:flex-end;height:12px}
+.sound i span{width:2px;background:var(--faint);height:4px;animation:eq 1s ease-in-out infinite}
+.sound i span:nth-child(2){animation-delay:.2s}.sound i span:nth-child(3){animation-delay:.4s}
+.sound.off i span{animation:none;height:2px}
+@keyframes eq{0%,100%{height:3px}50%{height:12px}}
+
+/* nav */
+.nav{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:22px clamp(20px,4vw,48px);opacity:0;transition:opacity 1s ease .2s}
+.ready .nav{opacity:1}
+.brand{display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px}
+.brand .ar{font-weight:600;font-size:18px;color:var(--dim)}
+.navlinks{display:flex;gap:28px;align-items:center;font-size:13.5px;color:var(--dim)}
+.navlinks a:hover{color:var(--ink)}
+.pill{font-size:13px;font-weight:500;padding:11px 18px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--ink)}
+
+/* sections */
+main{position:relative;z-index:2;opacity:0;transition:opacity 1.2s ease}
+.ready main{opacity:1}
+section{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:120px clamp(20px,6vw,96px)}
+.wrap{width:100%;max-width:1280px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,80px);align-items:center}
+.copy{display:flex;flex-direction:column;gap:22px;max-width:640px}
+[hidden]{display:none!important}
+h1,h2{font-weight:600;letter-spacing:-.035em;line-height:1}
+h1{font-size:clamp(44px,6.2vw,96px)}
+h2{font-size:clamp(38px,4.8vw,72px)}
+h2 .soft,h1 .soft{color:var(--faint)}
+p.lede{font-size:clamp(16px,1.2vw,18px);line-height:1.6;color:var(--dim);max-width:480px;font-weight:400}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+
+/* roller */
+.roll-box{height:1.02em;overflow:hidden;display:block}
+.roll{display:flex;flex-direction:column;animation:roll 11s cubic-bezier(.75,0,.2,1) infinite}
+.roll span{height:1.02em;display:block;white-space:nowrap;background:linear-gradient(90deg,#fff,#a9b4c8);-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes roll{0%,14%{transform:translateY(0)}17%,31%{transform:translateY(-1.02em)}34%,48%{transform:translateY(-2.04em)}51%,65%{transform:translateY(-3.06em)}68%,82%{transform:translateY(-4.08em)}85%,100%{transform:translateY(-5.1em)}}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}
+
+/* night list */
+.ticks{list-style:none;display:flex;flex-direction:column;border-top:1px solid var(--line);margin-top:6px}
+.ticks li{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.45;color:var(--dim)}
+.ticks li span{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--faint);min-width:46px;padding-top:2px}
+
+/* chat */
+.chat{display:flex;flex-direction:column;gap:9px;max-width:380px;margin-top:6px}
+.msg{padding:11px 15px;border-radius:16px;font-size:14.5px;line-height:1.45;max-width:85%;opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease}
+.msg.n{align-self:flex-start;background:rgba(255,255,255,.07);border:1px solid var(--line);border-bottom-left-radius:5px}
+.msg.u{align-self:flex-end;background:#e9e8e4;color:#0b0b0c;border-bottom-right-radius:5px}
+.in .msg{opacity:1;transform:none}
+.in .msg:nth-child(2){transition-delay:.7s}.in .msg:nth-child(3){transition-delay:1.5s}.in .msg:nth-child(4){transition-delay:2.3s}
+
+/* logos */
+.logos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:8px}
+.logo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;aspect-ratio:1/1;border:1px solid var(--line);border-radius:18px;background:var(--card);font-size:12px;color:var(--dim);transition:background .4s,border-color .4s,transform .4s}
+.logo:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);transform:translateY(-3px)}
+.logo svg{width:28px;height:28px;fill:var(--ink)}
+.logo .txt{font-weight:600;font-size:15px;color:var(--ink);height:28px;display:flex;align-items:center}
+.byo{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--dim)}
+.byo b{color:var(--ink);font-weight:500}
+
+/* feature list */
+.feats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px}
+.feat{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--card);font-size:14px;line-height:1.45;color:var(--dim)}
+.feat b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px;font-size:14.5px}
+kbd{font-family:"JetBrains Mono",monospace;font-size:11.5px;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--ink)}
+
+/* browser mockup */
+.mock{position:relative;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:#0d0d10;box-shadow:0 60px 120px -50px rgba(0,0,0,.9),0 0 0 1px rgba(0,0,0,.4);overflow:hidden}
+.bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);background:#121216}
+.bar i{width:10px;height:10px;border-radius:50%;background:#2a2a30}
+.bar .url{flex:1;margin-left:10px;height:24px;border-radius:8px;background:#1a1a20;font-size:11px;color:var(--faint);display:flex;align-items:center;padding:0 10px}
+.bwrap{display:grid;grid-template-columns:minmax(0,1fr) 210px;height:360px}
+.page{padding:22px;display:flex;flex-direction:column;gap:12px}
+.sk{height:10px;border-radius:6px;background:#1c1c22}
+.sk.h{height:22px;width:70%;background:#24242b}
+.sk.img{height:120px;border-radius:12px;background:linear-gradient(135deg,#1c1c22,#26262e)}
+.hl{outline:2px solid rgba(169,180,200,.8);outline-offset:4px;border-radius:6px;position:relative}
+.cursor{position:absolute;width:14px;height:14px;left:58%;top:62%;animation:pt 5s ease-in-out infinite}
+@keyframes pt{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,-30px)}}
+.side{border-left:1px solid var(--line);background:#101014;padding:14px;display:flex;flex-direction:column;gap:9px;font-size:12px;line-height:1.4}
+.side .hd{display:flex;align-items:center;gap:8px;font-weight:600;font-size:12.5px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.b1{background:rgba(255,255,255,.07);padding:8px 10px;border-radius:10px 10px 10px 3px;color:var(--ink)}
+.b2{background:#e9e8e4;color:#0b0b0c;padding:8px 10px;border-radius:10px 10px 3px 10px;align-self:flex-end}
+
+/* mac mockup */
+.mac{height:400px;background:radial-gradient(120% 90% at 30% 20%,#2b2f45 0%,#141623 50%,#0b0c12 100%);position:relative}
+.mbar{height:24px;background:rgba(0,0,0,.35);display:flex;align-items:center;gap:16px;padding:0 14px;font-size:11px;color:var(--dim)}
+.dock{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:8px;padding:8px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
+.dock i{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.12)}
+.bub{position:absolute;right:28px;top:120px;width:54px;height:54px;border-radius:50%;background:#0a0a0c;border:1px solid rgba(255,255,255,.2);display:grid;place-items:center;box-shadow:0 14px 30px rgba(0,0,0,.5);animation:bob 4s ease-in-out infinite}
+.bub::after{content:"";position:absolute;right:2px;top:2px;width:11px;height:11px;border-radius:50%;background:#ff4d3d;border:2px solid #0a0a0c}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.pop{position:absolute;right:96px;top:84px;width:240px;border-radius:14px;background:rgba(18,18,22,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);padding:12px;display:flex;flex-direction:column;gap:8px;font-size:12px;line-height:1.4}
+.tabs{display:flex;gap:6px}
+.tabs span{font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--faint)}
+.tabs span.on{background:var(--ink);color:#0a0a0b;border-color:var(--ink)}
+.file{position:absolute;left:60px;top:150px;width:62px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;color:var(--dim);animation:drag 6s ease-in-out infinite}
+.file i{width:42px;height:52px;border-radius:6px;background:linear-gradient(#eceae5,#cfccc5)}
+@keyframes drag{0%,15%{transform:translate(0,0);opacity:1}55%{transform:translate(clamp(180px,22vw,330px),-20px);opacity:1}65%,100%{transform:translate(clamp(180px,22vw,330px),-20px);opacity:0}}
+
+/* close */
+.close{min-height:110vh;text-align:center;justify-content:center}
+.close .copy{margin:0 auto;align-items:center;max-width:900px;padding-top:46vh}
+.close h2{font-weight:300;font-size:clamp(30px,4vw,56px);color:var(--dim)}
+.close h2 b{display:block;font-weight:600;color:var(--ink);font-size:clamp(46px,7vw,104px);margin-top:10px}
+.mail{font-size:13px;color:var(--faint)}
+footer{position:relative;z-index:2;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:28px clamp(20px,4vw,48px);border-top:1px solid var(--line);font-size:12.5px;color:var(--faint)}
+
+@media (max-width:860px){
+  .wrap{grid-template-columns:minmax(0,1fr)}
+  section{padding:100px 22px 80px;align-items:flex-end}
+  section.shape{padding-top:46svh}
+  .navlinks a:not(.pill){display:none}
+  .logos{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .feats{grid-template-columns:minmax(0,1fr)}
+  .bwrap{grid-template-columns:minmax(0,1fr) 170px;height:300px}
+  .mac{height:330px}
+  .pop{right:84px;width:200px}
+  .close .copy{padding-top:44svh}
+}
+@media (prefers-reduced-motion:reduce){.roll{animation:none}.sound i span,.cursor,.bub,.file{animation:none}}
+</style>
+</head>
+<body class="locked">
+
+<canvas id="field" aria-hidden="true"></canvas>
+
+<div class="gate" id="gate">
+  <div class="gate-in">
+    <div class="gate-mark"><svg viewBox="252 168 672 840" width="24" height="30" aria-hidden="true"><mask id="nm1"><rect width="1176" height="1176" fill="#fff"/><rect x="252" y="312" width="672" height="24"/><rect x="756" y="312" width="24" height="552"/><rect x="396" y="480" width="528" height="24"/><rect x="396" y="480" width="24" height="384"/><rect x="252" y="840" width="288" height="24"/><rect x="570" y="654" width="36" height="36"/></mask><rect x="252" y="168" width="672" height="840" fill="#f2f1ee" mask="url(#nm1)"/></svg><span>Norah</span><span class="ar">نورا</span></div>
+    <div class="gate-btns">
+      <button class="btn solid" id="enterSound" type="button">Enter with sound</button>
+      <button class="btn" id="enterQuiet" type="button">Enter quietly</button>
+    </div>
+    <small>Best with sound. About 8 seconds.</small>
+  </div>
+</div>
+
+<div class="intro" id="intro" aria-live="polite">
+  <div class="line" id="line"></div>
+</div>
+<button class="skip" id="skip" type="button" hidden>Skip intro</button>
+<button class="sound" id="soundBtn" type="button" hidden aria-label="Toggle sound"><i><span></span><span></span><span></span></i><em>SOUND</em></button>
+<audio id="vo" src="narration.mp3" preload="auto"></audio>
+
+<header class="nav">
+  <a class="brand" href="#top"><svg viewBox="252 168 672 840" width="21" height="26" aria-hidden="true"><mask id="nm2"><rect width="1176" height="1176" fill="#fff"/><rect x="252" y="312" width="672" height="24"/><rect x="756" y="312" width="24" height="552"/><rect x="396" y="480" width="528" height="24"/><rect x="396" y="480" width="24" height="384"/><rect x="252" y="840" width="288" height="24"/><rect x="570" y="654" width="36" height="36"/></mask><rect x="252" y="168" width="672" height="840" fill="#f2f1ee" mask="url(#nm2)"/></svg><span>Norah</span><span class="ar">نورا</span></a>
+  <nav class="navlinks">
+    <a href="#night">How she works</a>
+    <a href="#tools">Your tools</a>
+    <a href="#chrome">Chrome</a>
+    <a href="#mac">Mac</a>
+    <a class="pill" href="#access">Get early access</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="shape" data-shape="logo" data-side="right" id="hero">
+    <div class="wrap"><div class="copy">
+      <div class="mono rv">AI agent for founders</div>
+      <h1 class="rv d1">Norah is your<span class="roll-box"><span class="roll"><span>mentor.</span><span>PA.</span><span>co-founder.</span><span>night shift.</span><span>friend.</span><span>mentor.</span></span></span></h1>
+      <p class="lede rv d2">One agent for every hat you wear. She lives in your WhatsApp, works through the night, and never sends a thing without your yes.</p>
+      <div class="ctas rv d3"><a class="btn solid" href="#access">Get early access</a><a class="btn" href="#night">See how she works</a></div>
+    </div><div></div></div>
+  </section>
+
+  <section class="shape" data-shape="moon" data-side="right" id="night">
+    <div class="wrap"><div class="copy">
+      <div class="mono rv">00:44 · The night shift</div>
+      <h2 class="rv d1">While you sleep,<br><span class="soft">she gets to work.</span></h2>
+      <p class="lede rv d2">She reads your inbox, finds leads that fit, scouts competitions and events, and drafts your follow-ups. By morning, it's done.</p>
+      <ul class="ticks rv d3">
+        <li><span>01:16</span>Two replies need you. One investor is waiting on an answer.</li>
+        <li><span>01:58</span>Five new leads that match your ideal customer, notes drafted.</li>
+        <li><span>02:31</span>A pitch night on Thursday. Applications close Sunday.</li>
+        <li><span>03:38</span>Tomorrow, planned around your calendar.</li>
+      </ul>
+    </div><div></div></div>
+  </section>
+
+  <section class="shape" data-shape="bubble" data-side="right" id="morning">
+    <div class="wrap"><div class="copy">
+      <div class="mono rv">07:12 · Good morning</div>
+      <h2 class="rv d1">Before any plan,<br><span class="soft">she asks how you are.</span></h2>
+      <p class="lede rv d2">Tired? She keeps the day light. Busy? She waits until you need her. Your top three, nothing more.</p>
+      <div class="chat rv d3">
+        <div class="msg n">Good morning. How are you feeling today?</div>
+        <div class="msg u">Tired, slept late</div>
+        <div class="msg n">Then let's keep it light. Three things today, and I moved the rest to Thursday.</div>
+        <div class="msg u">You're the best</div>
+      </div>
+    </div><div></div></div>
+  </section>
+
+  <section data-shape="scatter" id="tools">
+    <div class="wrap"><div class="copy">
+      <div class="mono rv">Works with your tools</div>
+      <h2 class="rv d1">No new app to learn.<br><span class="soft">She works where you work.</span></h2>
+      <p class="lede rv d2">Connect the tools you already use, and bring the AI you already pay for as her brain.</p>
+      <div class="byo rv d3"><span>Her brain, your choice:</span><b>Claude</b>·<b>ChatGPT</b>·<b>Gemini</b></div>
+    </div>
+    <div class="logos rv d2"><div class="logo"><svg viewBox="0 0 24 24" role="img" aria-label="WhatsApp"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>WhatsApp</div><div class="logo"><svg viewBox="0 0 24 24" role="img" aria-label="Gmail"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>Gmail</div><div class="logo"><svg viewBox="0 0 24 24" role="img" aria-label="Calendar"><path d="M18.316 5.684H24v12.632h-5.684V5.684zM5.684 24h12.632v-5.684H5.684V24zM18.316 5.684V0H1.895A1.894 1.894 0 0 0 0 1.895v16.421h5.684V5.684h12.632zm-7.207 6.25v-.065c.272-.144.5-.349.687-.617s.279-.595.279-.982c0-.379-.099-.72-.3-1.025a2.05 2.05 0 0 0-.832-.714 2.703 2.703 0 0 0-1.197-.257c-.6 0-1.094.156-1.481.467-.386.311-.65.671-.793 1.078l1.085.452c.086-.249.224-.461.413-.633.189-.172.445-.257.767-.257.33 0 .602.088.816.264a.86.86 0 0 1 .322.703c0 .33-.12.589-.36.778-.24.19-.535.284-.886.284h-.567v1.085h.633c.407 0 .748.109 1.02.327.272.218.407.499.407.843 0 .336-.129.614-.387.832s-.565.327-.924.327c-.351 0-.651-.103-.897-.311-.248-.208-.422-.502-.521-.881l-1.096.452c.178.616.505 1.082.977 1.401.472.319.984.478 1.538.477a2.84 2.84 0 0 0 1.293-.291c.382-.193.684-.458.902-.794.218-.336.327-.72.327-1.149 0-.429-.115-.797-.344-1.105a2.067 2.067 0 0 0-.881-.689zm2.093-1.931l.602.913L15 10.045v5.744h1.187V8.446h-.827l-2.158 1.557zM22.105 0h-3.289v5.184H24V1.895A1.894 1.894 0 0 0 22.105 0zm-3.289 23.5l4.684-4.684h-4.684V23.5zM0 22.105C0 23.152.848 24 1.895 24h3.289v-5.184H0v3.289z"/></svg>Calendar</div><div class="logo"><svg viewBox="0 0 24 24" role="img" aria-label="Drive"><path d="M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z"/></svg>Drive</div><div class="logo"><svg viewBox="0 0 24 24" role="img" aria-label="Sheets"><path d="M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0v6h6l-6-6zm1.363 10.636h-3.41v1.91h3.41v-1.91zm0 3.273h-3.41v1.91h3.41v-1.91zM20.727 6.5v15.864c0 .904-.732 1.636-1.636 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.318v6.5h6.5zm-3.273 2.773H6.545v7.909h10.91v-7.91zm-6.136 4.636H7.91v1.91h3.41v-1.91z"/></svg>Sheets</div><div class="logo"><svg viewBox="0 0 24 24" role="img" aria-label="Notion"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z"/></svg>Notion</div><div class="logo"><svg viewBox="0 0 24 24" role="img" aria-label="Claude"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg>Claude</div><div class="logo"><svg viewBox="0 0 24 24" role="img" aria-label="Gemini"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>Gemini</div><div class="logo"><svg viewBox="0 0 24 24" role="img" aria-label="Chrome"><path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"/></svg>Chrome</div><div class="logo"><span class="txt">Slack</span></div><div class="logo"><span class="txt">LinkedIn</span></div><div class="logo"><span class="txt">ChatGPT</span></div></div>
+    </div>
+  </section>
+
+  <section data-shape="scatter" id="chrome">
+    <div class="wrap"><div class="copy">
+      <div class="mono rv">In Chrome</div>
+      <h2 class="rv d1">Norah, one click away<br><span class="soft">on every page.</span></h2>
+      <div class="feats rv d2">
+        <div class="feat"><b>Side panel chat</b>The same Norah from WhatsApp, right next to your work.</div>
+        <div class="feat"><b>Point and ask</b>Press <kbd>⌥ N</kbd>, click anything on a page, ask about it.</div>
+        <div class="feat"><b>Reply with Norah</b>She drafts the reply inside Gmail. You read, then send.</div>
+        <div class="feat"><b>Read this page</b>LinkedIn profiles, articles, docs. She reads, you decide.</div>
+      </div>
+    </div>
+    <div class="mock rv d2" aria-hidden="true">
+      <div class="bar"><i></i><i></i><i></i><div class="url">linkedin.com/in/…</div></div>
+      <div class="bwrap">
+        <div class="page" style="position:relative">
+          <div class="sk img"></div><div class="sk h hl"></div><div class="sk" style="width:90%"></div><div class="sk" style="width:76%"></div><div class="sk" style="width:84%"></div>
+          <svg class="cursor" viewBox="0 0 14 14"><path d="M1 1l11 5-5 1.5L5.5 13z" fill="#fff"/></svg>
+        </div>
+        <div class="side">
+          <div class="hd"><svg viewBox="252 168 672 840" width="13" height="16" aria-hidden="true"><mask id="nm3"><rect width="1176" height="1176" fill="#fff"/><rect x="252" y="312" width="672" height="24"/><rect x="756" y="312" width="24" height="552"/><rect x="396" y="480" width="528" height="24"/><rect x="396" y="480" width="24" height="384"/><rect x="252" y="840" width="288" height="24"/><rect x="570" y="654" width="36" height="36"/></mask><rect x="252" y="168" width="672" height="840" fill="#f2f1ee" mask="url(#nm3)"/></svg> Norah</div>
+          <div class="b2">Who is she?</div>
+          <div class="b1">Head of partnerships at an accelerator in Dubai. Great fit for you. Want a short note?</div>
+          <div class="b2">Yes please</div>
+          <div class="b1">Drafted. Tap copy, then send.</div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section data-shape="scatter" id="mac">
+    <div class="wrap"><div class="copy">
+      <div class="mono rv">On your Mac</div>
+      <h2 class="rv d1">A little bubble<br><span class="soft">that knows your day.</span></h2>
+      <div class="feats rv d2">
+        <div class="feat"><b>Always there</b>Press <kbd>⌥ Space</kbd> and talk to her from any app.</div>
+        <div class="feat"><b>Drop a file</b>What is this? File it? She knows where it goes.</div>
+        <div class="feat"><b>A tidy desktop</b>She cleans up every Friday, and asks before she moves a thing.</div>
+        <div class="feat"><b>Quiet updates</b>A small red dot instead of another notification.</div>
+      </div>
+    </div>
+    <div class="mock rv d2" aria-hidden="true">
+      <div class="mac">
+        <div class="mbar"><span><svg viewBox="0 0 24 24" width="11" height="11" style="fill:currentColor;vertical-align:-1px" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg></span><span>Finder</span><span>File</span><span>Edit</span></div>
+        <div class="file"><i></i>pitch-v7.pdf</div>
+        <div class="pop">
+          <div class="tabs"><span class="on">Chat</span><span>Desktop</span></div>
+          <div class="b1">Got it. That's your latest deck. I filed it in Pitch, and kept v6 in Older.</div>
+        </div>
+        <div class="bub"><svg viewBox="252 168 672 840" width="18" height="22" aria-hidden="true"><mask id="nm4"><rect width="1176" height="1176" fill="#fff"/><rect x="252" y="312" width="672" height="24"/><rect x="756" y="312" width="24" height="552"/><rect x="396" y="480" width="528" height="24"/><rect x="396" y="480" width="24" height="384"/><rect x="252" y="840" width="288" height="24"/><rect x="570" y="654" width="36" height="36"/></mask><rect x="252" y="168" width="672" height="840" fill="#f2f1ee" mask="url(#nm4)"/></svg></div>
+        <div class="dock"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section class="close shape" data-shape="logo" data-side="center" id="access">
+    <div class="copy">
+      <h2 class="rv">They say if you want it done right, do it yourself.<b>Now you can, twice.</b></h2>
+      <div class="ctas rv d1"><a class="btn solid" href="mailto:norah@cliquehub.digital?subject=Norah%20early%20access">Request early access</a></div>
+      <div class="mail rv d2">or write to norah@cliquehub.digital</div>
+    </div>
+  </section>
+</main>
+<footer><span>Norah · نورا</span><span>Made by Clique AI Limited, Dubai</span></footer>
+
+<script>
+(()=>{
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cv=document.getElementById('field'), ctx=cv.getContext('2d');
+let W=0,H=0,DPR=1,mobile=false;
+const N = (innerWidth<860||(navigator.hardwareConcurrency||4)<=4) ? 1800 : 3400;
+const P=new Float32Array(N*6); // x,y,vx,vy,tx,ty
+const seed=new Float32Array(N); for(let i=0;i<N;i++)seed[i]=Math.random();
+function resize(){DPR=Math.min(devicePixelRatio||1,1.5);W=innerWidth;H=innerHeight;mobile=W<860;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);if(cur)setShape(cur.name,cur.side,true);}
+
+/* ---- shapes, drawn on a 400x400 board then sampled ---- */
+const S=400, off=document.createElement('canvas'); off.width=off.height=S; const o=off.getContext('2d',{willReadFrequently:true});
+const draw={
+  logo(){const k=400/840;o.save();o.translate((S-672*k)/2,0);o.scale(k,k);o.translate(-252,-168);o.fillRect(252,168,672,840);
+    [[252,300,672,48],[744,300,48,576],[384,468,540,48],[384,468,48,408],[252,828,300,48],[552,636,72,72]].forEach(r=>o.clearRect(...r));o.restore();},
+  moon(){o.beginPath();o.arc(200,200,150,0,7);o.fill();o.globalCompositeOperation='destination-out';o.beginPath();o.arc(262,160,135,0,7);o.fill();o.globalCompositeOperation='source-over';
+    [[330,70,6],[360,150,4],[300,300,5],[370,250,3]].forEach(([x,y,r])=>{o.beginPath();o.arc(x,y,r,0,7);o.fill();});},
+  bubble(){o.beginPath();o.roundRect(40,70,320,220,48);o.fill();o.beginPath();o.moveTo(90,270);o.lineTo(70,345);o.lineTo(150,280);o.fill();
+    o.globalCompositeOperation='destination-out';[125,200,275].forEach(x=>{o.beginPath();o.arc(x,180,26,0,7);o.fill();});o.globalCompositeOperation='source-over';},
+  orbit(){o.lineWidth=7;[150,105,60].forEach(r=>{o.beginPath();o.arc(200,200,r,0,7);o.stroke();});
+    [[350,200],[200,95],[93,140],[140,305],[265,245]].forEach(([x,y])=>{o.beginPath();o.arc(x,y,14,0,7);o.fill();});o.beginPath();o.arc(200,200,22,0,7);o.fill();},
+};
+const cache={};
+function sample(name){
+  if(cache[name])return cache[name];
+  o.clearRect(0,0,S,S);o.fillStyle='#fff';o.strokeStyle='#fff';draw[name]();
+  const d=o.getImageData(0,0,S,S).data; let area=0;
+  for(let i=3;i<d.length;i+=4)if(d[i]>128)area++;
+  const g=Math.max(1,Math.sqrt(area/N)*.97), pts=[];
+  for(let y=g/2;y<S;y+=g)for(let x=g/2;x<S;x+=g){const xi=x|0,yi=y|0;if(d[(yi*S+xi)*4+3]>128)pts.push(x,y);}
+  for(let i=pts.length/2-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pts[i*2],pts[j*2]]=[pts[j*2],pts[i*2]];[pts[i*2+1],pts[j*2+1]]=[pts[j*2+1],pts[i*2+1]];}
+  const out=new Float32Array(N*2), L=pts.length/2;
+  for(let i=0;i<N;i++){const j=(i%L)*2;out[i*2]=pts[j]+(Math.random()-.5)*g*.35;out[i*2+1]=pts[j+1]+(Math.random()-.5)*g*.35;}
+  return cache[name]=out;
+}
+let cur=null;
+function place(side){ // returns cx, cy, size in px
+  const sz=mobile?Math.min(W*.62,H*.34):Math.min(W*.36,H*.62);
+  if(mobile) return [W/2, side==='center'?H*.22:H*.25, side==='center'?sz*.8:sz];
+  if(side==='center') return [W/2, H*.27, Math.min(W*.22,H*.3)];
+  return [W*.72, H*.52, sz];
+}
+function setShape(name,side,force){
+  if(!force&&cur&&cur.name===name&&cur.side===side)return;
+  cur={name,side};
+  if(name==='scatter'){for(let i=0;i<N;i++){P[i*6+4]=Math.random()*W;P[i*6+5]=Math.random()*H;}return;}
+  if(name==='dot'||name==='two'){const r=mobile?3:4;for(let i=0;i<N;i++){const a=Math.random()*7,rr=Math.sqrt(Math.random())*r;const dx=name==='two'?(i%2?1:-1)*(mobile?46:80):0;P[i*6+4]=W/2+dx+Math.cos(a)*rr;P[i*6+5]=H/2+60+Math.sin(a)*rr;}return;}
+  const t=sample(name), [cx,cy,sz]=place(side), k=sz/S;
+  for(let i=0;i<N;i++){P[i*6+4]=cx+(t[i*2]-S/2)*k;P[i*6+5]=cy+(t[i*2+1]-S/2)*k;}
+}
+
+/* start: particles spread, invisible */
+resize(); addEventListener('resize',resize);
+for(let i=0;i<N;i++){P[i*6]=W/2;P[i*6+1]=H/2+60;}
+let alpha=0, alphaT=0, mx=-9999, my=-9999;
+addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
+addEventListener('pointerleave',()=>{mx=my=-9999;});
+
+let last=performance.now(), running=true;
+document.addEventListener('visibilitychange',()=>{running=!document.hidden;if(running){last=performance.now();requestAnimationFrame(tick);}});
+function tick(now){
+  if(!running)return;
+  const dt=Math.min(2,(now-last)/16.67); last=now;
+  alpha+=(alphaT-alpha)*.05*dt;
+  ctx.clearRect(0,0,W,H);
+  if(alpha>.01){
+    ctx.globalCompositeOperation='lighter';
+    const t=now*.001, sp=reduce?.2:.055, damp=reduce?.6:.84, R=mobile?60:110, R2=R*R;
+    for(let i=0;i<N;i++){
+      const b=i*6; let x=P[b],y=P[b+1],vx=P[b+2],vy=P[b+3];
+      const s=seed[i];
+      const tx=P[b+4]+Math.sin(t*.7+s*40)*.6, ty=P[b+5]+Math.cos(t*.6+s*30)*.6;
+      vx+=(tx-x)*sp*dt; vy+=(ty-y)*sp*dt;
+      const dx=x-mx, dy=y-my, d2=dx*dx+dy*dy;
+      if(d2<R2){const f=(1-d2/R2)*4.2;const d=Math.sqrt(d2)||1;vx+=dx/d*f;vy+=dy/d*f;}
+      vx*=damp; vy*=damp; x+=vx*dt; y+=vy*dt;
+      P[b]=x;P[b+1]=y;P[b+2]=vx;P[b+3]=vy;
+      const tw=.75+.25*Math.sin(t*2+s*60);
+      const a=alpha*(cur&&cur.name==='scatter'?.32:.85)*tw;
+      ctx.fillStyle=s<.12?`rgba(255,214,190,${a})`:s<.3?`rgba(190,205,255,${a})`:`rgba(242,241,238,${a})`;
+      const z=s<.08?2.4:1.7; ctx.fillRect(x,y,z,z);
+    }
+    ctx.globalCompositeOperation='source-over';
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* ---- sections drive the shape ---- */
+const secs=[...document.querySelectorAll('main section')];
+function onScroll(){
+  if(!started)return;
+  let best=null,bd=1e9;
+  for(const s of secs){const r=s.getBoundingClientRect();const c=Math.abs(r.top+r.height/2-H/2);if(c<bd){bd=c;best=s;}}
+  if(best)setShape(best.dataset.shape,best.dataset.side||'right');
+}
+addEventListener('scroll',onScroll,{passive:true});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.querySelectorAll('.rv').forEach(el=>el.classList.add('in'))}),{threshold:.25});
+secs.forEach(s=>io.observe(s));
+
+/* ---- intro ---- */
+const gate=document.getElementById('gate'), intro=document.getElementById('intro'), line=document.getElementById('line');
+const skip=document.getElementById('skip'), vo=document.getElementById('vo'), soundBtn=document.getElementById('soundBtn');
+let started=false, timers=[], withSound=false, hasAudio=true;
+vo.addEventListener('error',()=>{hasAudio=false;});
+const at=(ms,fn)=>timers.push(setTimeout(fn,ms));
+function words(html){line.innerHTML=html.split(' ').map(w=>`<span class="w">${w}</span>`).join(' ');}
+function revealWords(from,gap){[...line.querySelectorAll('.w')].forEach((w,i)=>at(from+i*gap,()=>w.classList.add('on')));}
+/* timeline synced to narration.mp3 (ms from start) */
+const L1=[['They',0],['say',330],['if',1230],['you',1400],['want',1580],['it',1760],['done',1900],['right,',2080]];
+const L2=[['do',2750],['it',2930],['yourself.',3080]];
+const L3=[['Now',4810],['you',5060],['can,',5300]];
+const TW=6300, DONE=8000;
+function put(list,bold){const frag=document.createElement('span');frag.innerHTML=list.map(([w])=>`<span class="w">${bold?'<b>'+w+'</b>':w}</span>`).join(' ');return frag;}
+function run(){
+  intro.classList.remove('fade'); line.innerHTML='';
+  const s1=put(L1); line.appendChild(s1); const s1w=[...s1.querySelectorAll('.w')]; L1.forEach(([,t],i)=>at(t+60,()=>s1w[i].classList.add('on')));
+  at(2600,()=>{line.appendChild(document.createElement('br'));const s2=put(L2,true);line.appendChild(s2);const w=[...s2.querySelectorAll('.w')];L2.forEach(([,t],i)=>at(Math.max(0,t-2600+60),()=>w[i].classList.add('on')));});
+  at(3750,()=>{intro.classList.add('fade');alphaT=1;setShape('dot');});
+  at(4650,()=>{line.innerHTML='';intro.classList.remove('fade');const s3=put(L3);line.appendChild(s3);const w=[...s3.querySelectorAll('.w')];L3.forEach(([,t],i)=>at(t-4650+60,()=>w[i].classList.add('on')));});
+  at(5550,()=>setShape('two'));
+  at(TW,()=>{const s4=document.createElement('span');s4.innerHTML=' <span class="w"><b>twice.</b></span>';line.appendChild(s4);at(20,()=>s4.querySelector('.w').classList.add('on'));});
+  at(TW+120,()=>setShape('logo','right',true));
+  at(TW+1000,()=>intro.classList.add('fade'));
+  at(DONE,finish);
+}
+function finish(){
+  if(started)return; started=true;
+  timers.forEach(clearTimeout); timers=[];
+  intro.classList.add('fade'); skip.hidden=true; alphaT=1;
+  document.body.classList.remove('locked'); document.body.classList.add('ready');
+  setShape('logo','right',true); onScroll();
+  try{sessionStorage.setItem('norah-intro','1');}catch(e){}
+}
+function begin(sound){
+  withSound=sound&&hasAudio; gate.classList.add('out'); skip.hidden=false;
+  if(withSound){vo.currentTime=0;vo.play().catch(()=>{});soundBtn.hidden=false;}
+  if(reduce){finish();return;}
+  run();
+}
+document.getElementById('enterSound').addEventListener('click',()=>begin(true));
+document.getElementById('enterQuiet').addEventListener('click',()=>begin(false));
+skip.addEventListener('click',()=>{vo.pause();finish();});
+soundBtn.addEventListener('click',()=>{if(vo.paused){vo.play().catch(()=>{});soundBtn.classList.remove('off');}else{vo.pause();soundBtn.classList.add('off');}});
+vo.addEventListener('ended',()=>{soundBtn.hidden=true;});
+let seen=false; try{seen=sessionStorage.getItem('norah-intro')==='1';}catch(e){}
+if(seen){gate.classList.add('out');alphaT=1;finish();}
+})();
+</script>
+</body>
+</html>
