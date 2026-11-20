@@ -265,10 +265,10 @@ h1.story b{font-weight:700}
 .deck-ctl{display:flex;gap:10px}
 .arr{width:48px;height:48px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;color:var(--ink);transition:border-color .3s}
 .arr:hover{border-color:var(--faint)}
-.deck{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 4px 30px;cursor:grab;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.deck{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px calc(50vw - min(440px,84vw)/2) 30px;margin-inline:calc(50% - 50vw);cursor:none;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .deck::-webkit-scrollbar{display:none}
 .deck.drag{cursor:grabbing;scroll-snap-type:none}
-.hat{flex:0 0 min(440px,84vw);scroll-snap-align:center;border:1px solid var(--line);border-radius:26px;background:var(--panel);padding:28px;display:flex;flex-direction:column;gap:22px;min-height:400px;opacity:.38;transform:scale(.94);transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1),border-color .8s;user-select:none}
+.hat{flex:0 0 min(440px,84vw);scroll-snap-align:center;border:1px solid var(--line);border-radius:26px;background:var(--panel);padding:28px;display:flex;flex-direction:column;gap:22px;min-height:400px;opacity:.72;transform:scale(.95);transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1),border-color .8s;user-select:none}
 .hat.active{opacity:1;transform:none;border-color:var(--line2)}
 .hat-top{display:flex;flex-direction:column;gap:10px}
 .hat h3{font-size:clamp(34px,3.4vw,48px)}
@@ -281,6 +281,30 @@ h1.story b{font-weight:700}
 .dots{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
 .dots button{padding:8px 14px;border-radius:999px;border:1px solid var(--line);font-size:12.5px;color:var(--faint);transition:all .4s}
 .dots button.on{border-color:var(--g2);color:var(--ink)}
+.dots button:hover{color:var(--ink)}
+html,body{overflow-x:clip}
+/* deck cursor + swipe hint */
+.dcur{position:fixed;left:0;top:0;z-index:60;pointer-events:none;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--g1),var(--g2) 60%,var(--g3));color:#0b0b10;font:600 12px/1 Inter,sans-serif;letter-spacing:.04em;opacity:0;transform:scale(.4);transition:opacity .35s,transform .35s cubic-bezier(.2,.7,.2,1)}
+.dcur.on{opacity:1;transform:scale(1)}
+.dcur.press{transform:scale(.85)}
+.dcur span{display:flex;flex-direction:column;align-items:center;gap:5px}
+.dcur svg{width:20px;height:20px;transition:transform .35s}
+.dcur.back svg{transform:rotate(180deg)}
+.dcur em{font-style:normal}
+.hat.active .nexthint{opacity:1}
+.nexthint{position:absolute;right:22px;bottom:22px;width:44px;height:44px;border-radius:50%;border:1px solid var(--g2);display:grid;place-items:center;color:var(--ink);opacity:0;transition:opacity .6s;animation:nudge 2.4s ease-in-out infinite}
+.nexthint svg{width:18px;height:18px}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+.hat{position:relative}
+.swipe{display:none;justify-content:center;align-items:center;gap:8px;font-size:12.5px;color:var(--faint);margin:-6px 0 14px}
+.swipe svg{width:16px;height:16px;animation:nudge 2s ease-in-out infinite}
+@media (hover:none){.deck{cursor:auto}.dcur{display:none}.swipe{display:flex}}
+/* tap for sound hint */
+.taphint{position:fixed;left:50%;bottom:26px;z-index:55;transform:translate(-50%,20px);display:flex;align-items:center;gap:10px;padding:11px 18px;border-radius:999px;border:1px solid var(--g2);background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:13px;color:var(--ink);opacity:0;transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1);cursor:pointer}
+.taphint.on{opacity:1;transform:translate(-50%,0)}
+.taphint i{display:flex;gap:2px;align-items:flex-end;height:12px}
+.taphint b{display:block;width:2px;height:3px;background:var(--g2);border-radius:1px;animation:eq 1.1s ease-in-out infinite}
+.taphint b:nth-child(2){animation-delay:.2s}.taphint b:nth-child(3){animation-delay:.4s}.taphint b:nth-child(4){animation-delay:.6s}
 @media (max-width:900px){.sec-hd{align-items:flex-start}.hat{min-height:360px}.snd span{display:none}.snd{padding:10px 12px}.navlinks{gap:10px}}
 @media (prefers-reduced-motion:reduce){.scene{opacity:1;transform:none}.say .w,.say-c .w{opacity:1;filter:none}}
 </style>
@@ -290,6 +314,8 @@ h1.story b{font-weight:700}
 
 <audio id="vo" src="narration.mp3" preload="auto"></audio>
 
+<div class="dcur" id="dcur" aria-hidden="true"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg><em id="dcurT">Next</em></span></div>
+<button class="taphint" id="taphint" type="button"><i><b></b><b></b><b></b><b></b></i>Tap anywhere to hear Norah</button>
 <header class="nav" id="nav">
   <a class="mark" href="#top"><svg viewBox="252 168 672 840" width="22" height="28" aria-hidden="true" style=""><path fill="currentColor" fill-rule="evenodd" d="M924 168 L252 168 L252 307 L924 307 Z M924 341 L785 341 L785 475 L924 475 Z M252 1008 L924 1008 L924 509 L785 509 L785 869 L751 869 L751 509 L425 509 L425 835 L540 835 L540 869 L425 869 L391 869 L252 869 Z M562.5 697.5 L562.5 646.5 L613.5 646.5 L613.5 697.5 Z M252 835 L391 835 L391 509 L391 475 L425 475 L751 475 L751 341 L252 341 Z"/></svg><span>Norah</span><span class="ar">نورا</span></a>
   <nav class="navlinks">
@@ -304,13 +330,13 @@ h1.story b{font-weight:700}
 </header>
 
 <main id="top">
-  <section class="hero">
+  <section class="hero" id="hero">
     <div class="copy">
       <div class="status"><i></i><span>Norah is awake</span><b id="stat">Drafting 3 replies for your morning</b></div>
       <h1 class="story" id="story" aria-label="They say if you want it done right, do it yourself. Now you can, twice."></h1>
       <div class="after" id="after">
         <p class="lede">Norah is one AI agent for every hat a founder wears. She lives in your WhatsApp, works through the night, and never sends a thing without your yes.</p>
-        <div class="ctas"><a class="btn solid" href="#access">Get early access</a><button class="btn hear" id="hear" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Hear it</button></div>
+        <div class="ctas"><a class="btn solid" href="#access">Get early access</a></div>
       </div>
     </div>
     <div class="mark-slot" id="slot">
@@ -365,40 +391,40 @@ h1.story b{font-weight:700}
   <section class="sec scene" id="hats" data-vo="vo/hats.mp3">
     <div class="sec-hd">
       <h2 class="say">Norah wears every hat <span class="grad">you do.</span></h2>
-      <div class="deck-ctl"><button class="arr" id="prev" type="button" aria-label="Previous hat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6"/></svg></button><button class="arr" id="next" type="button" aria-label="Next hat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button></div>
+      
     </div>
     <div class="deck" id="deck"><article class="hat" data-vo="vo/mentor.mp3" data-i="0">
           <div class="hat-top"><span class="mono">01 / 06</span><h3>Mentor</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Your competitor just launched a free tier. Here is what I would do.</span></div>
           <p class="hat-d">She reads the market for you, then tells you what she would do, and why.</p>
           <div class="tags"><span>Competitor deep dive</span><span>Your next move</span></div>
-        </article><article class="hat" data-vo="vo/pa.mp3" data-i="1">
+        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/pa.mp3" data-i="1">
           <div class="hat-top"><span class="mono">02 / 06</span><h3>PA</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">I moved your three o’clock, with your yes. The reply is waiting in Gmail.</span></div>
           <p class="hat-d">Calendar, inbox and follow-ups, handled. Nothing changes without your yes.</p>
           <div class="tags"><span>Calendar</span><span>Gmail draft</span></div>
-        </article><article class="hat" data-vo="vo/cofounder.mp3" data-i="2">
+        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/cofounder.mp3" data-i="2">
           <div class="hat-top"><span class="mono">03 / 06</span><h3>Co-founder</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Five new leads fit your ideal customer. Want the notes?</span></div>
           <p class="hat-d">She finds the right people overnight and drafts the first message.</p>
           <div class="tags"><span>5 leads</span><span>Notes drafted</span></div>
-        </article><article class="hat" data-vo="vo/nightshift.mp3" data-i="3">
+        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/nightshift.mp3" data-i="3">
           <div class="hat-top"><span class="mono">04 / 06</span><h3>Night shift</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">While you slept, I drafted two replies, and found a pitch night for Thursday.</span></div>
           <p class="hat-d">Heavy work happens while you sleep, so your morning starts clear.</p>
           <div class="tags"><span>2 replies</span><span>1 pitch night</span></div>
-        </article><article class="hat" data-vo="vo/advisor.mp3" data-i="4">
+        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/advisor.mp3" data-i="4">
           <div class="hat-top"><span class="mono">05 / 06</span><h3>Advisor</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">That deadline is in three days. The form is already half filled.</span></div>
           <p class="hat-d">Competitions, grants and deadlines, tracked and prepared.</p>
           <div class="tags"><span>3 days left</span><span>Half filled</span></div>
-        </article><article class="hat" data-vo="vo/friend.mp3" data-i="5">
+        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/friend.mp3" data-i="5">
           <div class="hat-top"><span class="mono">06 / 06</span><h3>Friend</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">You have a free Saturday. Sunset by the water?</span></div>
           <p class="hat-d">Birthdays, rest and the weekend. She remembers you have a life.</p>
           <div class="tags"><span>Saturday</span><span>Sunset</span></div>
-        </article></div>
-    <div class="dots" id="dots"><button type="button" aria-label="Mentor" data-i="0"><span>Mentor</span></button><button type="button" aria-label="PA" data-i="1"><span>PA</span></button><button type="button" aria-label="Co-founder" data-i="2"><span>Co-founder</span></button><button type="button" aria-label="Night shift" data-i="3"><span>Night shift</span></button><button type="button" aria-label="Advisor" data-i="4"><span>Advisor</span></button><button type="button" aria-label="Friend" data-i="5"><span>Friend</span></button></div>
+        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article></div>
+    <div class="swipe" id="swipe"><span>Swipe for the next hat</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div><div class="dots" id="dots"><button type="button" aria-label="Mentor" data-i="0"><span>Mentor</span></button><button type="button" aria-label="PA" data-i="1"><span>PA</span></button><button type="button" aria-label="Co-founder" data-i="2"><span>Co-founder</span></button><button type="button" aria-label="Night shift" data-i="3"><span>Night shift</span></button><button type="button" aria-label="Advisor" data-i="4"><span>Advisor</span></button><button type="button" aria-label="Friend" data-i="5"><span>Friend</span></button></div>
   </section>
 
   <section class="close scene" id="access" data-vo="vo/close.mp3">
@@ -431,7 +457,7 @@ function startAnalyser(){
 }
 
 /* ---------- hero story ---------- */
-const mk=document.getElementById('mk'), story=document.getElementById('story'), after=document.getElementById('after'), hear=document.getElementById('hear'), statusEl=document.querySelector('.status');
+const mk=document.getElementById('mk'), story=document.getElementById('story'), after=document.getElementById('after'), statusEl=document.querySelector('.status');
 const L1=[['They',0],['say',330],['if',1230],['you',1400],['want',1580],['it',1760],['done',1900],['right,',2080]];
 const L2=[['do',2750],['it',2930],['yourself.',3080]];
 const L3=[['Now',4810],['you',5060],['can,',5300]];
@@ -452,72 +478,135 @@ function play(){
   at(TW+1100,()=>{after.classList.add('on');statusEl.classList.add('on');});
 }
 function showAll(){build();story.querySelectorAll('.w').forEach(e=>e.classList.add('on'));mk.classList.remove('scatter');after.classList.add('on');statusEl.classList.add('on');}
-hear.addEventListener('click',()=>{
-  if(!hasAudio){play();return;}
-  if(!window.__an){startAnalyser();window.__an=1;}
-  vo.currentTime=0; vo.play().then(()=>{hear.classList.add('playing');play();}).catch(()=>play());
-});
-vo.addEventListener('ended',()=>hear.classList.remove('playing'));
 if(reduce) showAll(); else setTimeout(play,500);
 
-
-/* ---------- narration engine ---------- */
-let soundOn=false;
-const sndBtn=document.getElementById('snd'), amb=new Audio('vo/ambient.mp3'); amb.loop=true; amb.volume=0;
+/* ---------- narration engine ----------
+   Sound is on by default. Browsers only allow audio after a first tap, click or key,
+   so the very first interaction anywhere unlocks it. After that, whichever section
+   sits in the middle of the screen speaks, every time you arrive at it. */
+let muted=false; try{muted=localStorage.getItem('norah-muted')==='1';}catch(e){}
+let unlocked=false;
+const sndBtn=document.getElementById('snd'), tap=document.getElementById('taphint');
+const amb=new Audio('vo/ambient.mp3'); amb.loop=true; amb.volume=0; amb.preload='auto';
 let player=new Audio(); player.preload='auto';
-function wrapWords(el){ if(el.dataset.wrapped)return; const walk=n=>{[...n.childNodes].forEach(c=>{ if(c.nodeType===3){const f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(t=>{if(!t)return; if(/^\s+$/.test(t))f.appendChild(document.createTextNode(t)); else{const s=document.createElement('span');s.className='w';s.textContent=t;f.appendChild(s);}});c.replaceWith(f);} else if(c.nodeType===1&&!c.classList.contains('w'))walk(c);});}; walk(el); el.dataset.wrapped=1; }
+const soundOn=()=>unlocked&&!muted;
+function wrapWords(el){ if(el.dataset.wrapped)return; const walk=n=>{[...n.childNodes].forEach(c=>{ if(c.nodeType===3){const f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(t=>{if(!t)return; if(/^\s+$/.test(t))f.appendChild(document.createTextNode(t)); else{const sp=document.createElement('span');sp.className='w';sp.textContent=t;f.appendChild(sp);}});c.replaceWith(f);} else if(c.nodeType===1&&!c.classList.contains('w'))walk(c);});}; walk(el); el.dataset.wrapped=1; }
 document.querySelectorAll('.say,.say-c').forEach(wrapWords);
 let reveals=[];
 function reveal(words,dur){ reveals.forEach(clearTimeout); reveals=[]; const n=words.length; words.forEach((w,i)=>reveals.push(setTimeout(()=>w.classList.add('on'),(i/Math.max(1,n))*dur*0.9))); }
-function speak(el,words){
-  words.forEach(w=>w.classList.remove('on'));
+let seq=0; /* bumps whenever something new starts, so stale callbacks do nothing */
+function stopVoice(){ seq++; player.pause(); vo.pause(); timers.forEach(clearTimeout); document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); }
+function speak(el,words,onEnd){
+  const my=++seq; player.pause(); vo.pause();
   const src=el.dataset.vo;
-  if(soundOn&&src){
-    player.pause(); player=new Audio(src);
-    player.addEventListener('loadedmetadata',()=>reveal(words,player.duration*1000),{once:true});
-    player.addEventListener('error',()=>reveal(words,words.length*170),{once:true});
+  if(soundOn()&&src){
+    words.forEach(w=>w.classList.remove('on'));
+    player=new Audio(src);
+    player.addEventListener('loadedmetadata',()=>{ if(my===seq) reveal(words,player.duration*1000); },{once:true});
+    player.addEventListener('error',()=>{ if(my===seq) reveal(words,words.length*170); },{once:true});
     document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); el.classList.add('speaking');
-    player.addEventListener('ended',()=>el.classList.remove('speaking'),{once:true});
+    player.addEventListener('ended',()=>{ el.classList.remove('speaking'); if(my===seq&&onEnd) setTimeout(()=>{ if(my===seq) onEnd(); },350); },{once:true});
     player.play().catch(()=>reveal(words,words.length*170));
-  } else reveal(words,words.length*170);
+  } else {
+    if(!words.some(w=>w.classList.contains('on'))) reveal(words,words.length*170);
+    if(onEnd) setTimeout(()=>{ if(my===seq) onEnd(); },words.length*170+600);
+  }
 }
-function setSound(on){
-  soundOn=on; try{sessionStorage.setItem('norah-sound',on?'1':'0');}catch(e){}
-  sndBtn.classList.toggle('on',on); sndBtn.setAttribute('aria-pressed',on); sndBtn.querySelector('span').textContent=on?'Sound on':'Sound off';
-  if(on){amb.play().catch(()=>{}); fadeVol(amb,.16);} else {fadeVol(amb,0,()=>amb.pause()); player.pause(); vo.pause();}
+function heroSpeak(){
+  stopVoice();
+  if(soundOn()&&hasAudio){ if(!window.__an){startAnalyser();window.__an=1;} vo.currentTime=0; vo.play().then(play).catch(play); }
+  else if([...story.querySelectorAll('.w')].some(w=>!w.classList.contains('on'))||!story.querySelector('.w')) (story.querySelector('.w')?showAll():play());
 }
+const hatsSec=document.getElementById('hats');
+function speakSection(sec){
+  if(!sec) return;
+  if(sec.id==='hero') return heroSpeak();
+  sec.classList.add('in');
+  const words=[...sec.querySelectorAll('.say .w')].filter(w=>!w.closest('.hat'));
+  if(sec===hatsSec){ speak(sec,words,()=>speakCard()); }
+  else speak(sec,words);
+}
+/* ambient bed: always under the voice, a touch quieter while she talks */
 function fadeVol(a,to,done){const from=a.volume,t0=performance.now();(function f(n){const k=Math.min(1,(n-t0)/1200);a.volume=Math.min(1,Math.max(0,from+(to-from)*k));if(k<1)requestAnimationFrame(f);else done&&done();})(t0);}
-sndBtn.addEventListener('click',()=>setSound(!soundOn));
-sndBtn.classList.toggle('on',false);
-hear.addEventListener('click',()=>{ if(!soundOn) setSound(true); },true);
-/* scenes speak when they arrive */
-const spoken=new WeakSet();
-const sio=new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting)return; const el=e.target; el.classList.add('in'); if(spoken.has(el))return; spoken.add(el);
-  const words=[...el.querySelectorAll(':scope .say .w')].filter(w=>!w.closest('.hat'));
-  setTimeout(()=>speak(el,words),500);
-}),{threshold:.45});
-document.querySelectorAll('.scene').forEach(s=>sio.observe(s));
+function startBed(){ amb.play().then(()=>fadeVol(amb,.16)).catch(()=>{}); }
+function paint(){
+  const on=soundOn();
+  sndBtn.classList.toggle('on',on); sndBtn.setAttribute('aria-pressed',on); sndBtn.querySelector('span').textContent=on?'Sound on':'Sound off';
+  tap.classList.toggle('on',!unlocked&&!muted);
+}
+function unlock(){
+  if(unlocked) return; unlocked=true; paint();
+  ['pointerdown','keydown','touchend'].forEach(t=>removeEventListener(t,unlockEv,true));
+  if(muted) return;
+  startBed(); speakSection(current);
+}
+function unlockEv(e){ if(e.target.closest&&e.target.closest('#snd')) return; unlock(); }
+['pointerdown','keydown','touchend'].forEach(t=>addEventListener(t,unlockEv,true));
+/* some browsers allow sound straight away for returning visitors: try it */
+if(!muted){ amb.play().then(()=>{ unlocked=true; amb.volume=0; fadeVol(amb,.16); paint(); }).catch(()=>{}); }
+setTimeout(paint,1600);
+sndBtn.addEventListener('click',()=>{
+  if(!unlocked){ unlocked=true; muted=false; }
+  else muted=!muted;
+  try{localStorage.setItem('norah-muted',muted?'1':'0');}catch(e){}
+  paint();
+  if(muted){ stopVoice(); fadeVol(amb,0,()=>amb.pause()); }
+  else { startBed(); speakSection(current); }
+});
+tap.addEventListener('click',unlock);
+
+/* which section is in the middle of the screen? that one speaks, again on every return */
+const sections=[document.getElementById('hero'),...document.querySelectorAll('.scene')];
+let current=sections[0], swapT;
+function pickCurrent(){
+  const mid=innerHeight/2; let best=null, bd=1e9;
+  sections.forEach(sc=>{ const r=sc.getBoundingClientRect(); if(r.bottom<innerHeight*.25||r.top>innerHeight*.75) return; const d=r.top<=mid&&r.bottom>=mid?0:Math.min(Math.abs(r.top-mid),Math.abs(r.bottom-mid)); if(d<bd){bd=d;best=sc;} });
+  return best;
+}
+function onScrollSpy(){
+  const sc=pickCurrent(); if(sc) sc.classList.add('in');
+  if(sc===current) return;
+  clearTimeout(swapT);
+  swapT=setTimeout(()=>{ const s2=pickCurrent(); if(!s2||s2===current) return; current=s2; speakSection(current); },450);
+}
+addEventListener('scroll',onScrollSpy,{passive:true});
+/* also reveal sections that are only partly on screen */
+const sio=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:.2});
+document.querySelectorAll('.scene').forEach(sc=>sio.observe(sc));
 
 /* ---------- hats deck ---------- */
 const deck=document.getElementById('deck'), hatsEls=[...deck.querySelectorAll('.hat')], dots=[...document.querySelectorAll('#dots button')];
-let active=-1, deckSeen=false;
+hatsEls.forEach(h=>h.querySelectorAll('.say-c .w').forEach(w=>w.classList.add('on'))); /* every card readable */
+let active=-1;
+function speakCard(){ const h=hatsEls[active]; if(h) speak(h,[...h.querySelectorAll('.say-c .w')]); }
 function setActive(i){ if(i===active)return; active=i;
   hatsEls.forEach((h,k)=>h.classList.toggle('active',k===i)); dots.forEach((d,k)=>d.classList.toggle('on',k===i));
-  if(!deckSeen)return; const h=hatsEls[i]; speak(h,[...h.querySelectorAll('.say-c .w')]); }
-function goTo(i){ i=Math.max(0,Math.min(hatsEls.length-1,i)); const h=hatsEls[i]; deck.scrollTo({left:h.offsetLeft-(deck.clientWidth-h.clientWidth)/2,behavior:'smooth'}); }
-deck.addEventListener('scroll',()=>{ const c=deck.scrollLeft+deck.clientWidth/2; let b=0,bd=1e9; hatsEls.forEach((h,k)=>{const d=Math.abs(h.offsetLeft+h.clientWidth/2-c); if(d<bd){bd=d;b=k;}}); clearTimeout(deck._t); deck._t=setTimeout(()=>setActive(b),140); },{passive:true});
-document.getElementById('prev').onclick=()=>goTo(active-1); document.getElementById('next').onclick=()=>goTo(active+1);
-dots.forEach(d=>d.onclick=()=>goTo(+d.dataset.i)); hatsEls.forEach(h=>h.addEventListener('click',()=>{ if(!deck._moved) goTo(+h.dataset.i); }));
+  if(current===hatsSec) speakCard(); }
+function goTo(i){ const n=hatsEls.length; i=(i+n)%n; const h=hatsEls[i]; deck.scrollTo({left:h.offsetLeft-(deck.clientWidth-h.clientWidth)/2,behavior:'smooth'}); }
+function nearest(){ const c=deck.scrollLeft+deck.clientWidth/2; let b=0,bd=1e9; hatsEls.forEach((h,k)=>{const d=Math.abs(h.offsetLeft+h.clientWidth/2-c); if(d<bd){bd=d;b=k;}}); return b; }
+deck.addEventListener('scroll',()=>{ clearTimeout(deck._t); deck._t=setTimeout(()=>setActive(nearest()),140); },{passive:true});
+dots.forEach(d=>d.onclick=()=>goTo(+d.dataset.i));
+/* click: a side card opens that card, the middle card moves on to the next one */
+hatsEls.forEach(h=>h.addEventListener('click',()=>{ if(deck._moved) return; const i=+h.dataset.i; goTo(i===active?active+1:i); }));
+/* follow-the-mouse cursor that says Next or Back */
+const dcur=document.getElementById('dcur'), dcurT=document.getElementById('dcurT');
+let cx=0,cy=0,tx=0,ty=0,raf=0;
+function loop(){ cx+=(tx-cx)*.22; cy+=(ty-cy)*.22; dcur.style.left=cx+'px'; dcur.style.top=cy+'px'; raf=dcur.classList.contains('on')||Math.abs(tx-cx)>.5?requestAnimationFrame(loop):0; }
+deck.addEventListener('pointermove',e=>{ if(e.pointerType!=='mouse')return; tx=e.clientX; ty=e.clientY; if(!dcur.classList.contains('on')){cx=tx;cy=ty;}
+  const card=e.target.closest('.hat'); const i=card?+card.dataset.i:-1;
+  const back=card&&i<active || (!card&&e.clientX<innerWidth/2);
+  dcur.classList.toggle('back',!!back); dcurT.textContent=down&&deck._moved?'Drag':back?'Back':(card&&i>active?'Open':'Next');
+  dcur.classList.add('on'); if(!raf) raf=requestAnimationFrame(loop); });
+deck.addEventListener('pointerleave',()=>dcur.classList.remove('on'));
 /* drag to scroll */
 let dx=0,sl=0,down=false;
-deck.addEventListener('pointerdown',e=>{ if(e.pointerType!=='mouse')return; down=true; deck._moved=false; dx=e.clientX; sl=deck.scrollLeft; deck.classList.add('drag'); });
+deck.addEventListener('pointerdown',e=>{ if(e.pointerType!=='mouse')return; down=true; deck._moved=false; dx=e.clientX; sl=deck.scrollLeft; deck.classList.add('drag'); dcur.classList.add('press'); });
 addEventListener('pointermove',e=>{ if(!down)return; const m=e.clientX-dx; if(Math.abs(m)>4)deck._moved=true; deck.scrollLeft=sl-m; });
-addEventListener('pointerup',()=>{ if(!down)return; down=false; deck.classList.remove('drag'); const c=deck.scrollLeft+deck.clientWidth/2; let b=0,bd=1e9; hatsEls.forEach((h,k)=>{const d=Math.abs(h.offsetLeft+h.clientWidth/2-c); if(d<bd){bd=d;b=k;}}); goTo(b); });
+addEventListener('pointerup',()=>{ if(!down)return; down=false; deck.classList.remove('drag'); dcur.classList.remove('press'); if(deck._moved) goTo(nearest()); setTimeout(()=>deck._moved=false,0); });
 addEventListener('keydown',e=>{ const r=deck.getBoundingClientRect(); if(r.top<innerHeight&&r.bottom>0){ if(e.key==='ArrowRight')goTo(active+1); if(e.key==='ArrowLeft')goTo(active-1);} });
+deck.addEventListener('touchstart',()=>document.getElementById('swipe').style.opacity=0,{passive:true,once:true});
 setActive(0);
-/* the deck starts speaking card one after the section line */
-const hatsSec=document.getElementById('hats');
-new IntersectionObserver(es=>{ if(es[0].isIntersecting&&!deckSeen){ deckSeen=true; setTimeout(()=>{ const h=hatsEls[active]; const go=()=>speak(h,[...h.querySelectorAll('.say-c .w')]); if(soundOn&&!player.paused){player.addEventListener('ended',()=>setTimeout(go,300),{once:true});} else setTimeout(go,1200); },600);} },{threshold:.5}).observe(hatsSec);
+requestAnimationFrame(()=>{ deck.scrollLeft=hatsEls[0].offsetLeft-(deck.clientWidth-hatsEls[0].clientWidth)/2; });
 
 /* ---------- nav, status, reveals, hover light ---------- */
 const nav=document.getElementById('nav');
