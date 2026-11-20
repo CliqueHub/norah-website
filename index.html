@@ -334,7 +334,7 @@ html,body{overflow-x:clip}
 .m{animation:none!important;opacity:0;transform:translateY(10px);transition:opacity .7s,transform .7s cubic-bezier(.2,.7,.2,1)}
 .m.on{opacity:1;transform:none}
 /* hats carousel */
-.carousel{position:relative;height:440px;width:100%;touch-action:pan-y;cursor:none}
+.carousel{position:relative;height:440px;width:100%;touch-action:pan-y}
 @media (hover:none){.carousel{cursor:auto}}
 .carousel .hat{position:absolute;left:50%;top:0;width:min(440px,82vw);margin-left:calc(min(440px,82vw)/-2);height:420px;min-height:0;opacity:1;transition:transform .9s cubic-bezier(.2,.7,.2,1),opacity .9s,filter .9s,border-color .9s;will-change:transform}
 .carousel .hat.active{border-color:var(--g2);box-shadow:0 40px 90px -50px color-mix(in srgb,var(--g2) 60%,transparent)}
@@ -377,8 +377,7 @@ html,body{overflow-x:clip}
 @media (max-width:700px){.tok b.word{font-size:9px}.tok[data-wide] svg{width:30px;height:30px}}
 /* calmer hats: solid cards, only the two neighbours, far back */
 .carousel .hat{background:var(--bg2)}
-.carousel .hat:not(.active) .hat-top,.carousel .hat:not(.active) .bubble-n,.carousel .hat:not(.active) .hat-d,.carousel .hat:not(.active) .tags{opacity:.0;transition:opacity .6s}
-.carousel .hat.active .hat-top,.carousel .hat.active .bubble-n,.carousel .hat.active .hat-d,.carousel .hat.active .tags{opacity:1;transition:opacity .8s .25s}
+
 
 .close.slide{align-items:center}
 .ea{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:min(640px,100%)}
@@ -389,6 +388,32 @@ html,body{overflow-x:clip}
 .ea.sent{display:none}
 .mail-note.ok{color:var(--ink);font-size:16px}
 @media (max-width:600px){.ea .btn{flex:1 1 100%}}
+
+/* hats: stack (option A) */
+.carousel .hat{cursor:pointer}
+.carousel .hat .full{display:flex;flex-direction:column;gap:22px;height:100%;width:100%;margin-left:0;transition:width .9s cubic-bezier(.2,.7,.2,1),margin .9s cubic-bezier(.2,.7,.2,1)}
+.carousel .hat.active{border-color:color-mix(in srgb,var(--g2) 45%,var(--line2));box-shadow:0 30px 70px -55px color-mix(in srgb,var(--g2) 70%,transparent);cursor:default}
+.carousel .hat.bk{background:var(--bg2)}
+.carousel .hat.bk h3{color:var(--faint);background:none;-webkit-text-fill-color:currentColor}
+.carousel .hat.bk .bubble-n{background:transparent;border-color:var(--line);color:var(--faint);font-size:15px}
+.carousel .hat.bk .bubble-n .from,.carousel .hat.bk .hat-d,.carousel .hat.bk .tags span,.carousel .hat.bk .mono{color:var(--faint)}
+.carousel .hat.bk .hat-d{font-size:13.5px}
+.carousel .hat.bk .tags span{border-color:var(--line)}
+.carousel .hat.bk .tags{flex-wrap:wrap}.carousel .hat .tags span{white-space:nowrap}
+.carousel .hat.b1 .full{width:62%}
+.carousel .hat.b2 .full{width:52%}
+.carousel .hat.b2 h3{font-size:30px;white-space:nowrap}
+.carousel .hat.rt .full{margin-left:auto}
+.carousel .hat.bk:hover{border-color:color-mix(in srgb,var(--g2) 40%,var(--line2))}
+.carousel .hat.bk:hover h3{color:var(--dim)}
+.carousel .hat.flash{animation:flash 1.3s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--g2) 55%,transparent),0 30px 70px -55px var(--g2)}100%{box-shadow:0 0 0 22px transparent,0 30px 70px -55px color-mix(in srgb,var(--g2) 70%,transparent)}}
+@media (max-width:700px){.carousel .hat.bk .full>*:not(:first-child){opacity:0}.carousel .hat.b1 .full,.carousel .hat.b2 .full{width:100%}}
+
+.carousel .hat.b1 h3{font-size:38px;white-space:nowrap}
+.taphint{left:auto;right:24px;bottom:24px;transform:translateY(20px)}
+.taphint.on{transform:none}
+@media (max-width:700px){.taphint{right:50%;bottom:auto;top:96px;transform:translate(50%,-10px)}.taphint.on{transform:translate(50%,0)}}
 </style>
 </head>
 <body class="ready">
@@ -396,7 +421,6 @@ html,body{overflow-x:clip}
 
 <audio id="vo" src="narration.mp3" preload="auto"></audio>
 
-<div class="dcur" id="dcur" aria-hidden="true"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg><em id="dcurT">Next</em></span></div>
 <button class="taphint" id="taphint" type="button"><i><b></b><b></b><b></b><b></b></i>Tap anywhere to hear Norah</button>
 <header class="nav" id="nav">
   <a class="mark" href="#top"><svg viewBox="252 168 672 840" width="22" height="28" aria-hidden="true" style=""><path fill="currentColor" fill-rule="evenodd" d="M924 168 L252 168 L252 307 L924 307 Z M924 341 L785 341 L785 475 L924 475 Z M252 1008 L924 1008 L924 509 L785 509 L785 869 L751 869 L751 509 L425 509 L425 835 L540 835 L540 869 L425 869 L391 869 L252 869 Z M562.5 697.5 L562.5 646.5 L613.5 646.5 L613.5 697.5 Z M252 835 L391 835 L391 509 L391 475 L425 475 L751 475 L751 341 L252 341 Z"/></svg><span>Norah</span><span class="ar">نورا</span></a>
@@ -665,13 +689,17 @@ let chatDone=false;
 function playChat(){ if(chatDone) return; chatDone=true; everySec.querySelectorAll('.m').forEach((m,i)=>setTimeout(()=>m.classList.add('on'),400+i*1100)); }
 
 /* ---------- hats carousel ---------- */
-const deck=$('#deck'), hatsEls=[...deck.querySelectorAll('.hat')], dots=[...document.querySelectorAll('#dots button')], N=hatsEls.length;
+const deck=$('#deck'), hatsEls=[...deck.querySelectorAll('.hat')].map(h=>{ const f=document.createElement('div'); f.className='full'; while(h.firstChild) f.appendChild(h.firstChild); h.appendChild(f); return h; }), dots=[...document.querySelectorAll('#dots button')], N=hatsEls.length;
 let active=0;
 function layoutCards(){ const mob=innerWidth<700;
-  hatsEls.forEach((h,k)=>{ let o=k-active; if(o>N/2)o-=N; if(o<-N/2+.5)o+=N; const a=Math.abs(o), W=h.offsetWidth;
-    h.style.transform=`translateX(${o*W*(mob?.9:.78)}px) scale(${a?.86:1})`;
-    h.style.opacity=a===0?1:a===1?.35:0; h.style.zIndex=10-a; h.style.filter='none';
-    h.style.pointerEvents=a>1?'none':'auto'; h.classList.toggle('active',a===0); }); }
+  hatsEls.forEach((h,k)=>{ let o=k-active; if(o>N/2)o-=N; if(o<-N/2+.5)o+=N; const a=Math.abs(o), sg=Math.sign(o), W=h.offsetWidth/440;
+    let tf='none', op=1;
+    if(a===1){ tf=mob?`translateX(${sg*W*150}px) rotate(${sg*4}deg) scale(.88)`:`translateX(${sg*W*300}px) rotate(${sg*5}deg) scale(.88)`; }
+    else if(a===2&&!mob){ tf=`translateX(${sg*W*520}px) rotate(${sg*9}deg) scale(.78)`; op=.55; }
+    else if(a>=2){ tf=`translateX(${sg*W*(mob?160:560)}px) scale(.7)`; op=0; }
+    h.style.transform=tf; h.style.opacity=op; h.style.zIndex=10-a; h.style.filter='none';
+    h.style.pointerEvents=op?'auto':'none';
+    h.classList.toggle('active',a===0); h.classList.toggle('bk',a>0); h.classList.toggle('b1',a===1); h.classList.toggle('b2',a===2); h.classList.toggle('rt',o>0); }); }
 function setDot(dur){ dots.forEach((d,k)=>{ d.classList.toggle('on',k===active); d.classList.remove('run'); }); const d=dots[active]; d.style.setProperty('--dur',dur+'s'); void d.offsetWidth; d.classList.add('run'); }
 function speakCard(){ const h=hatsEls[active]; setDot(soundOn()?8:6);
   h.addEventListener('voicelen',e=>setDot(e.detail+.5),{once:true});
@@ -679,19 +707,11 @@ function speakCard(){ const h=hatsEls[active]; setDot(soundOn()?8:6);
 function setActive(i){ active=(i+N)%N; layoutCards(); if(current===hatsSec) speakCard(); else setDot(0.01); }
 dots.forEach(d=>d.onclick=()=>setActive(+d.dataset.i));
 let px=null, moved=false;
-deck.addEventListener('pointerdown',e=>{ px=e.clientX; moved=false; dcur.classList.add('press'); });
-addEventListener('pointerup',e=>{ dcur.classList.remove('press'); if(px===null) return; const dx=e.clientX-px; px=null; if(Math.abs(dx)>40){ moved=true; setActive(active+(dx<0?1:-1)); } });
-hatsEls.forEach((h,k)=>h.addEventListener('click',()=>{ if(moved) return; setActive(k===active?active+1:k); }));
+deck.addEventListener('pointerdown',e=>{ px=e.clientX; moved=false; });
+addEventListener('pointerup',e=>{ if(px===null) return; const dx=e.clientX-px; px=null; if(Math.abs(dx)>40){ moved=true; setActive(active+(dx<0?1:-1)); } });
+hatsEls.forEach((h,k)=>h.addEventListener('click',()=>{ if(moved) return; if(k!==active) setActive(k); const c=hatsEls[active]; c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash'); }));
 addEventListener('keydown',e=>{ if(current!==hatsSec) return; if(e.key==='ArrowRight')setActive(active+1); if(e.key==='ArrowLeft')setActive(active-1); });
 addEventListener('resize',layoutCards);
-/* the cursor says Next or Back */
-const dcur=$('#dcur'), dcurT=$('#dcurT'); let cx=0,cy=0,tx=0,ty=0,raf=0;
-function cloop(){ cx+=(tx-cx)*.22; cy+=(ty-cy)*.22; dcur.style.left=cx+'px'; dcur.style.top=cy+'px'; raf=dcur.classList.contains('on')||Math.abs(tx-cx)>.5?requestAnimationFrame(cloop):0; }
-deck.addEventListener('pointermove',e=>{ if(e.pointerType!=='mouse') return; tx=e.clientX; ty=e.clientY; if(!dcur.classList.contains('on')){cx=tx;cy=ty;}
-  const card=e.target.closest('.hat'); const k=card?+card.dataset.i:-1; let o=k-active; if(o>N/2)o-=N; if(o<-N/2+.5)o+=N;
-  const back=card?o<0:e.clientX<innerWidth/2; dcur.classList.toggle('back',back); dcurT.textContent=back?'Back':(card&&o>0?'Open':'Next');
-  dcur.classList.add('on'); if(!raf) raf=requestAnimationFrame(cloop); });
-deck.addEventListener('pointerleave',()=>dcur.classList.remove('on'));
 layoutCards(); setDot(0.01);
 
 /* ---------- tools orbit ---------- */
