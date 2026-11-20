@@ -307,6 +307,70 @@ html,body{overflow-x:clip}
 .taphint b:nth-child(2){animation-delay:.2s}.taphint b:nth-child(3){animation-delay:.4s}.taphint b:nth-child(4){animation-delay:.6s}
 @media (max-width:900px){.sec-hd{align-items:flex-start}.hat{min-height:360px}.snd span{display:none}.snd{padding:10px 12px}.navlinks{gap:10px}}
 @media (prefers-reduced-motion:reduce){.scene{opacity:1;transform:none}.say .w,.say-c .w{opacity:1;filter:none}}
+
+/* ===== v6: slides, continue button, carousel, orbit ===== */
+.slide{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding-top:96px!important;padding-bottom:168px!important}
+.hero.slide{display:grid}
+@media (min-width:900px) and (min-height:680px){html{scroll-snap-type:y proximity}.slide{scroll-snap-align:start}}
+.cont{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--dim);font-size:13px;z-index:5}
+.cont .ring{position:relative;width:78px;height:78px;border-radius:50%;display:grid;place-items:center;color:var(--ink);transition:transform .4s}
+.cont .ring::before{content:"";position:absolute;inset:-15px;border-radius:50%;border:1px solid var(--line2);animation:breathe 3.2s ease-in-out infinite}
+.cont:hover .ring{transform:scale(1.06)}
+.cont .prog{position:absolute;inset:0;transform:rotate(-90deg)}
+.cont .prog circle{fill:none;stroke-width:1.6}
+.cont .trk{stroke:var(--line2)}
+.cont .bar{stroke:url(#contg);stroke:var(--g2);stroke-dasharray:100;stroke-dashoffset:var(--p,0);transition:stroke-dashoffset .25s linear}
+.cont .arw{width:22px;height:22px;animation:bob 2.4s ease-in-out infinite}
+.cont .lbl{letter-spacing:.02em}
+@keyframes breathe{0%,100%{opacity:.35;transform:scale(.96)}50%{opacity:1;transform:scale(1.03)}}
+@keyframes bob{0%,100%{transform:translateY(-3px)}50%{transform:translateY(4px)}}
+.shd{text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;margin-bottom:clamp(28px,5vh,52px)}
+.shd .sub{color:var(--dim);max-width:520px;line-height:1.6}
+/* text: revealed words stay; replays glow over them */
+.say .w,.say-c .w,h1.story .w{transition:opacity .7s ease,filter .7s ease,transform .6s,color .5s,text-shadow .5s}
+.w.hl{text-shadow:0 0 18px color-mix(in srgb,var(--g2) 70%,transparent)}
+.say-c .w{opacity:1;filter:none}
+/* chat plays once, then stays */
+.m{animation:none!important;opacity:0;transform:translateY(10px);transition:opacity .7s,transform .7s cubic-bezier(.2,.7,.2,1)}
+.m.on{opacity:1;transform:none}
+/* hats carousel */
+.carousel{position:relative;height:440px;width:100%;touch-action:pan-y;cursor:none}
+@media (hover:none){.carousel{cursor:auto}}
+.carousel .hat{position:absolute;left:50%;top:0;width:min(440px,82vw);margin-left:calc(min(440px,82vw)/-2);height:420px;min-height:0;opacity:1;transition:transform .9s cubic-bezier(.2,.7,.2,1),opacity .9s,filter .9s,border-color .9s;will-change:transform}
+.carousel .hat.active{border-color:var(--g2);box-shadow:0 40px 90px -50px color-mix(in srgb,var(--g2) 60%,transparent)}
+.dots{margin-top:22px}
+.dots button{position:relative;overflow:hidden}
+.dots button span{position:relative;z-index:1}
+.dots button::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3))}
+.dots button.on.run::after{animation:fillw var(--dur,6s) linear forwards}
+@keyframes fillw{to{width:100%}}
+.swipe{display:none!important}
+.nexthint{display:none}
+/* orbit */
+.orbit{position:relative;width:min(980px,100%);height:clamp(330px,46vh,540px);margin:0 auto}
+.links{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.links line{stroke:var(--line2);stroke-width:1;stroke-dasharray:3 6;transition:stroke .4s,opacity .6s;opacity:0}
+.links line.on{opacity:1}
+.links line.hot{stroke:url(#lg);stroke-width:1.6;stroke-dasharray:none}
+.links circle{fill:var(--g2)}
+.core{position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;display:grid;place-items:center;background:var(--bg2);border:1px solid var(--line2);color:var(--ink);z-index:3;box-shadow:0 0 80px -10px color-mix(in srgb,var(--g2) 55%,transparent)}
+.core svg{width:34px;height:42px}
+.core .pulse{position:absolute;inset:0;border-radius:50%;border:1px solid var(--g2);animation:ping 3.6s ease-out infinite;opacity:0}
+.core .p2{animation-delay:1.8s}
+@keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.6);opacity:0}}
+.tok{position:absolute;left:0;top:0;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--bg2) 85%,transparent);border:1px solid var(--line2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:2;opacity:0;transition:opacity .8s,border-color .4s,box-shadow .4s,background .4s;cursor:pointer}
+.tok.on{opacity:1}
+.tok svg{width:22px;height:22px;fill:var(--ink)}
+.tok b{font:700 15px Syne,sans-serif;letter-spacing:-.02em;color:var(--ink)}
+.tok em{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-size:12px;color:var(--ink);opacity:0;transition:opacity .3s;pointer-events:none}
+.tok.hot{border-color:var(--g2);box-shadow:0 0 0 6px color-mix(in srgb,var(--g2) 14%,transparent),0 0 40px -6px var(--g2)}
+.tok.hot em{opacity:1}
+.ocap{text-align:center;min-height:48px;margin-top:10px;font-size:16px;color:var(--dim)}
+.ocap b{color:var(--ink);font-weight:600;margin-right:6px}
+.ocap span{display:inline-block;transition:opacity .4s,transform .4s;opacity:0;transform:translateY(6px)}
+.ocap span.on{opacity:1;transform:none}
+@media (max-width:900px){.slide{padding-top:116px!important}}
+@media (max-width:700px){.tok{width:42px;height:42px;margin:-21px 0 0 -21px}.tok svg{width:17px;height:17px}.tok b{font-size:12px}.core{width:72px;height:72px;margin:-36px 0 0 -36px}.core svg{width:26px;height:32px}.carousel{height:430px}.carousel .hat{height:410px}.orbit{height:min(92vw,440px)}}
 </style>
 </head>
 <body class="ready">
@@ -319,7 +383,7 @@ html,body{overflow-x:clip}
 <header class="nav" id="nav">
   <a class="mark" href="#top"><svg viewBox="252 168 672 840" width="22" height="28" aria-hidden="true" style=""><path fill="currentColor" fill-rule="evenodd" d="M924 168 L252 168 L252 307 L924 307 Z M924 341 L785 341 L785 475 L924 475 Z M252 1008 L924 1008 L924 509 L785 509 L785 869 L751 869 L751 509 L425 509 L425 835 L540 835 L540 869 L425 869 L391 869 L252 869 Z M562.5 697.5 L562.5 646.5 L613.5 646.5 L613.5 697.5 Z M252 835 L391 835 L391 509 L391 475 L425 475 L751 475 L751 341 L252 341 Z"/></svg><span>Norah</span><span class="ar">نورا</span></a>
   <nav class="navlinks">
-    <a href="#everywhere">Where she lives</a><a href="#hats">Her hats</a>
+    <a href="#hats">Her hats</a><a href="#everywhere">Where she lives</a>
     <a href="#tools">Connects to</a>
     <button class="snd" id="snd" type="button" aria-pressed="false" aria-label="Sound"><i><b></b><b></b><b></b><b></b></i><span>Sound off</span></button>
     <button class="theme" id="themeBtn" type="button" aria-label="Switch light or dark mode">
@@ -330,7 +394,7 @@ html,body{overflow-x:clip}
 </header>
 
 <main id="top">
-  <section class="hero" id="hero">
+  <section class="hero slide" id="hero">
     <div class="copy">
       <div class="status"><i></i><span>Norah is awake</span><b id="stat">Drafting 3 replies for your morning</b></div>
       <h1 class="story" id="story" aria-label="They say if you want it done right, do it yourself. Now you can, twice."></h1>
@@ -359,9 +423,47 @@ html,body{overflow-x:clip}
         </g>
       </svg>
     </div>
+    <button class="cont" type="button" aria-label="Continue to the next part"><span class="ring"><svg class="prog" viewBox="0 0 80 80" aria-hidden="true"><circle class="trk" cx="40" cy="40" r="37"/><circle class="bar" cx="40" cy="40" r="37" pathLength="100"/></svg><svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span><span class="lbl">Scroll to continue</span></button>
   </section>
 
-  <section class="sec scene" id="everywhere" data-vo="vo/everywhere.mp3">
+  <section class="sec slide scene" id="hats" data-vo="vo/hats.mp3">
+    <div class="shd"><h2 class="say">Norah wears every hat <span class="grad">you do.</span></h2></div>
+    <div class="carousel" id="deck"><article class="hat" data-vo="vo/hat_mentor.mp3" data-lead="1.48" data-i="0">
+          <div class="hat-top"><span class="mono">01 / 06</span><h3>Mentor</h3></div>
+          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Your competitor just launched a free tier. Here is what I would do.</span></div>
+          <p class="hat-d">She reads the market for you, then tells you what she would do, and why.</p>
+          <div class="tags"><span>Competitor deep dive</span><span>Your next move</span></div>
+        </article><article class="hat" data-vo="vo/hat_pa.mp3" data-lead="1.88" data-i="1">
+          <div class="hat-top"><span class="mono">02 / 06</span><h3>PA</h3></div>
+          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">I moved your three o’clock, with your yes. The reply is waiting in Gmail.</span></div>
+          <p class="hat-d">Calendar, inbox and follow-ups, handled. Nothing changes without your yes.</p>
+          <div class="tags"><span>Calendar</span><span>Gmail draft</span></div>
+        </article><article class="hat" data-vo="vo/hat_cofounder.mp3" data-lead="1.52" data-i="2">
+          <div class="hat-top"><span class="mono">03 / 06</span><h3>Co-founder</h3></div>
+          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Five new leads fit your ideal customer. Want the notes?</span></div>
+          <p class="hat-d">She finds the right people overnight and drafts the first message.</p>
+          <div class="tags"><span>5 leads</span><span>Notes drafted</span></div>
+        </article><article class="hat" data-vo="vo/hat_nightshift.mp3" data-lead="1.7" data-i="3">
+          <div class="hat-top"><span class="mono">04 / 06</span><h3>Night shift</h3></div>
+          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">While you slept, I drafted two replies, and found a pitch night for Thursday.</span></div>
+          <p class="hat-d">Heavy work happens while you sleep, so your morning starts clear.</p>
+          <div class="tags"><span>2 replies</span><span>1 pitch night</span></div>
+        </article><article class="hat" data-vo="vo/hat_advisor.mp3" data-lead="1.49" data-i="4">
+          <div class="hat-top"><span class="mono">05 / 06</span><h3>Advisor</h3></div>
+          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">That deadline is in three days. The form is already half filled.</span></div>
+          <p class="hat-d">Competitions, grants and deadlines, tracked and prepared.</p>
+          <div class="tags"><span>3 days left</span><span>Half filled</span></div>
+        </article><article class="hat" data-vo="vo/hat_friend.mp3" data-lead="1.3" data-i="5">
+          <div class="hat-top"><span class="mono">06 / 06</span><h3>Friend</h3></div>
+          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">You have a free Saturday. Sunset by the water?</span></div>
+          <p class="hat-d">Birthdays, rest and the weekend. She remembers you have a life.</p>
+          <div class="tags"><span>Saturday</span><span>Sunset</span></div>
+        </article></div>
+    <div class="dots" id="dots"><button type="button" aria-label="Mentor" data-i="0"><span>Mentor</span></button><button type="button" aria-label="PA" data-i="1"><span>PA</span></button><button type="button" aria-label="Co-founder" data-i="2"><span>Co-founder</span></button><button type="button" aria-label="Night shift" data-i="3"><span>Night shift</span></button><button type="button" aria-label="Advisor" data-i="4"><span>Advisor</span></button><button type="button" aria-label="Friend" data-i="5"><span>Friend</span></button></div>
+    <button class="cont" type="button" aria-label="Continue to the next part"><span class="ring"><svg class="prog" viewBox="0 0 80 80" aria-hidden="true"><circle class="trk" cx="40" cy="40" r="37"/><circle class="bar" cx="40" cy="40" r="37" pathLength="100"/></svg><svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span><span class="lbl">Scroll to continue</span></button>
+  </section>
+
+  <section class="sec slide scene" id="everywhere" data-vo="vo/everywhere.mp3">
     <div class="prod">
       <div>
         <div class="mono" style="margin-bottom:18px">Same Norah, everywhere</div>
@@ -384,50 +486,17 @@ html,body{overflow-x:clip}
         <div class="fc f3"><div class="k">MAC</div>Filed pitch-v7.pdf in Pitch. Kept v6 in Older.</div>
       </div>
     </div>
+    <button class="cont" type="button" aria-label="Continue to the next part"><span class="ring"><svg class="prog" viewBox="0 0 80 80" aria-hidden="true"><circle class="trk" cx="40" cy="40" r="37"/><circle class="bar" cx="40" cy="40" r="37" pathLength="100"/></svg><svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span><span class="lbl">Scroll to continue</span></button>
   </section>
 
-  <section class="sec tools2 scene" id="tools" data-vo="vo/connects.mp3"><div class="sec-hd"><h2 class="say">No new app <span class="grad">to learn.</span></h2><p class="say">Bring the tools you already use, and the AI you already trust.</p></div><div class="tg"><div class="grp"><div class="k">Talk to her</div><div class="chips"><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>WhatsApp</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"/></svg>Chrome</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>Mac</span></div></div><div class="grp"><div class="k">Her brain, your choice</div><div class="chips"><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg>Claude</span><span class="tool"><i></i>ChatGPT</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>Gemini</span></div></div><div class="grp"><div class="k">Your work</div><div class="chips"><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>Gmail</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.316 5.684H24v12.632h-5.684V5.684zM5.684 24h12.632v-5.684H5.684V24zM18.316 5.684V0H1.895A1.894 1.894 0 0 0 0 1.895v16.421h5.684V5.684h12.632zm-7.207 6.25v-.065c.272-.144.5-.349.687-.617s.279-.595.279-.982c0-.379-.099-.72-.3-1.025a2.05 2.05 0 0 0-.832-.714 2.703 2.703 0 0 0-1.197-.257c-.6 0-1.094.156-1.481.467-.386.311-.65.671-.793 1.078l1.085.452c.086-.249.224-.461.413-.633.189-.172.445-.257.767-.257.33 0 .602.088.816.264a.86.86 0 0 1 .322.703c0 .33-.12.589-.36.778-.24.19-.535.284-.886.284h-.567v1.085h.633c.407 0 .748.109 1.02.327.272.218.407.499.407.843 0 .336-.129.614-.387.832s-.565.327-.924.327c-.351 0-.651-.103-.897-.311-.248-.208-.422-.502-.521-.881l-1.096.452c.178.616.505 1.082.977 1.401.472.319.984.478 1.538.477a2.84 2.84 0 0 0 1.293-.291c.382-.193.684-.458.902-.794.218-.336.327-.72.327-1.149 0-.429-.115-.797-.344-1.105a2.067 2.067 0 0 0-.881-.689zm2.093-1.931l.602.913L15 10.045v5.744h1.187V8.446h-.827l-2.158 1.557zM22.105 0h-3.289v5.184H24V1.895A1.894 1.894 0 0 0 22.105 0zm-3.289 23.5l4.684-4.684h-4.684V23.5zM0 22.105C0 23.152.848 24 1.895 24h3.289v-5.184H0v3.289z"/></svg>Google Calendar</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z"/></svg>Google Drive</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.727 6.727H14V0H4.91c-.905 0-1.637.732-1.637 1.636v20.728c0 .904.732 1.636 1.636 1.636h14.182c.904 0 1.636-.732 1.636-1.636V6.727h-6zm-.545 10.455H7.09v-1.364h7.09v1.364zm2.727-3.273H7.091v-1.364h9.818v1.364zm0-3.273H7.091V9.273h9.818v1.363zM14.727 6h6l-6-6v6z"/></svg>Google Docs</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0v6h6l-6-6zm1.363 10.636h-3.41v1.91h3.41v-1.91zm0 3.273h-3.41v1.91h3.41v-1.91zM20.727 6.5v15.864c0 .904-.732 1.636-1.636 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.318v6.5h6.5zm-3.273 2.773H6.545v7.909h10.91v-7.91zm-6.136 4.636H7.91v1.91h3.41v-1.91z"/></svg>Google Sheets</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z"/></svg>Notion</span><span class="tool"><i></i>Slack</span></div></div><div class="grp"><div class="k">Meetings</div><div class="chips"><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.53 2.13 0 7.75h5.53zm.398 0v5.62h7.608v3.65l5.47-4.45c-.014-1.22.031-2.25-.025-3.46-.148-1.09-1.287-1.47-2.236-1.36zM23.1 4.32c-.802.295-1.358.995-2.047 1.49-2.506 2.05-4.982 4.12-7.468 6.19 3.025 2.59 6.04 5.18 9.065 7.76 1.218.671 1.428-.814 1.328-1.64v-13a.828.828 0 0 0-.877-.825zM.038 8.15v7.7h5.53v-7.7zm13.577 8.1H6.008v5.62c3.864-.006 7.737.011 11.58-.009 1.02-.07 1.618-1.12 1.468-2.07v-2.51l-5.47-4.68v3.65zm-13.577 0c.02 1.44-.041 2.88.033 4.31.162.948 1.158 1.43 2.047 1.31h3.464v-5.62z"/></svg>Google Meet</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.033 14.649H.743a.74.74 0 0 1-.686-.458.74.74 0 0 1 .16-.808L3.19 10.41H1.06A1.06 1.06 0 0 1 0 9.35h3.957c.301 0 .57.18.686.458a.74.74 0 0 1-.161.808L1.51 13.59h2.464c.585 0 1.06.475 1.06 1.06zM24 11.338c0-1.14-.927-2.066-2.066-2.066-.61 0-1.158.265-1.537.686a2.061 2.061 0 0 0-1.536-.686c-1.14 0-2.066.926-2.066 2.066v3.311a1.06 1.06 0 0 0 1.06-1.06v-2.251a1.004 1.004 0 0 1 2.013 0v2.251c0 .586.474 1.06 1.06 1.06v-3.311a1.004 1.004 0 0 1 2.012 0v2.251c0 .586.475 1.06 1.06 1.06zM16.265 12a2.728 2.728 0 1 1-5.457 0 2.728 2.728 0 0 1 5.457 0zm-1.06 0a1.669 1.669 0 1 0-3.338 0 1.669 1.669 0 0 0 3.338 0zm-4.82 0a2.728 2.728 0 1 1-5.458 0 2.728 2.728 0 0 1 5.457 0zm-1.06 0a1.669 1.669 0 1 0-3.338 0 1.669 1.669 0 0 0 3.338 0z"/></svg>Zoom</span></div></div><div class="grp"><div class="k">Leads and opportunities</div><div class="chips"><span class="tool"><i></i>LinkedIn</span><span class="tool"><i></i>Apollo</span><span class="tool"><i></i>Luma</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>Instagram</span><span class="tool"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>TikTok</span></div></div></div></section>
-
-  <section class="sec scene" id="hats" data-vo="vo/hats.mp3">
-    <div class="sec-hd">
-      <h2 class="say">Norah wears every hat <span class="grad">you do.</span></h2>
-      
-    </div>
-    <div class="deck" id="deck"><article class="hat" data-vo="vo/mentor.mp3" data-i="0">
-          <div class="hat-top"><span class="mono">01 / 06</span><h3>Mentor</h3></div>
-          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Your competitor just launched a free tier. Here is what I would do.</span></div>
-          <p class="hat-d">She reads the market for you, then tells you what she would do, and why.</p>
-          <div class="tags"><span>Competitor deep dive</span><span>Your next move</span></div>
-        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/pa.mp3" data-i="1">
-          <div class="hat-top"><span class="mono">02 / 06</span><h3>PA</h3></div>
-          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">I moved your three o’clock, with your yes. The reply is waiting in Gmail.</span></div>
-          <p class="hat-d">Calendar, inbox and follow-ups, handled. Nothing changes without your yes.</p>
-          <div class="tags"><span>Calendar</span><span>Gmail draft</span></div>
-        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/cofounder.mp3" data-i="2">
-          <div class="hat-top"><span class="mono">03 / 06</span><h3>Co-founder</h3></div>
-          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Five new leads fit your ideal customer. Want the notes?</span></div>
-          <p class="hat-d">She finds the right people overnight and drafts the first message.</p>
-          <div class="tags"><span>5 leads</span><span>Notes drafted</span></div>
-        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/nightshift.mp3" data-i="3">
-          <div class="hat-top"><span class="mono">04 / 06</span><h3>Night shift</h3></div>
-          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">While you slept, I drafted two replies, and found a pitch night for Thursday.</span></div>
-          <p class="hat-d">Heavy work happens while you sleep, so your morning starts clear.</p>
-          <div class="tags"><span>2 replies</span><span>1 pitch night</span></div>
-        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/advisor.mp3" data-i="4">
-          <div class="hat-top"><span class="mono">05 / 06</span><h3>Advisor</h3></div>
-          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">That deadline is in three days. The form is already half filled.</span></div>
-          <p class="hat-d">Competitions, grants and deadlines, tracked and prepared.</p>
-          <div class="tags"><span>3 days left</span><span>Half filled</span></div>
-        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article><article class="hat" data-vo="vo/friend.mp3" data-i="5">
-          <div class="hat-top"><span class="mono">06 / 06</span><h3>Friend</h3></div>
-          <div class="bubble-n"><span class="from">Norah</span><span class="say-c">You have a free Saturday. Sunset by the water?</span></div>
-          <p class="hat-d">Birthdays, rest and the weekend. She remembers you have a life.</p>
-          <div class="tags"><span>Saturday</span><span>Sunset</span></div>
-        <span class="nexthint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></article></div>
-    <div class="swipe" id="swipe"><span>Swipe for the next hat</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div><div class="dots" id="dots"><button type="button" aria-label="Mentor" data-i="0"><span>Mentor</span></button><button type="button" aria-label="PA" data-i="1"><span>PA</span></button><button type="button" aria-label="Co-founder" data-i="2"><span>Co-founder</span></button><button type="button" aria-label="Night shift" data-i="3"><span>Night shift</span></button><button type="button" aria-label="Advisor" data-i="4"><span>Advisor</span></button><button type="button" aria-label="Friend" data-i="5"><span>Friend</span></button></div>
+  <section class="sec slide scene" id="tools" data-vo="vo/connects.mp3">
+    <div class="shd"><h2 class="say">No new app <span class="grad">to learn.</span></h2><p class="say sub">Bring the tools you already use, and the AI you already trust.</p></div>
+    <div class="orbit" id="orbit"><svg class="links" id="links" aria-hidden="true"><defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" style="stop-color:var(--g1)"/><stop offset=".55" style="stop-color:var(--g2)"/><stop offset="1" style="stop-color:var(--g3)"/></linearGradient></defs></svg><div class="core"><span class="pulse"></span><span class="pulse p2"></span><svg viewBox="252 168 672 840" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M924 168 L252 168 L252 307 L924 307 Z M924 341 L785 341 L785 475 L924 475 Z M252 1008 L924 1008 L924 509 L785 509 L785 869 L751 869 L751 509 L425 509 L425 835 L540 835 L540 869 L425 869 L391 869 L252 869 Z M562.5 697.5 L562.5 646.5 L613.5 646.5 L613.5 697.5 Z M252 835 L391 835 L391 509 L391 475 L425 475 L751 475 L751 341 L252 341 Z"/></svg></div><button class="tok" type="button" data-ring="1" data-name="WhatsApp" data-cap="Where you talk to her, by text or voice note." aria-label="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><em>WhatsApp</em></button><button class="tok" type="button" data-ring="1" data-name="Chrome" data-cap="Reads the page you are on and drafts the next step." aria-label="Chrome"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"/></svg><em>Chrome</em></button><button class="tok" type="button" data-ring="1" data-name="Mac" data-cap="Keeps your files and desktop in order." aria-label="Mac"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><em>Mac</em></button><button class="tok" type="button" data-ring="1" data-name="Claude" data-cap="One of the brains she can think with." aria-label="Claude"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg><em>Claude</em></button><button class="tok" type="button" data-ring="1" data-name="ChatGPT" data-cap="Prefer ChatGPT? She can run on it too." aria-label="ChatGPT"><b>GPT</b><em>ChatGPT</em></button><button class="tok" type="button" data-ring="1" data-name="Gemini" data-cap="Or Gemini. Your call." aria-label="Gemini"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg><em>Gemini</em></button><button class="tok" type="button" data-ring="2" data-name="Gmail" data-cap="Drafts your replies. Sends only with your yes." aria-label="Gmail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg><em>Gmail</em></button><button class="tok" type="button" data-ring="2" data-name="Google Calendar" data-cap="Moves meetings and protects your focus." aria-label="Google Calendar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.316 5.684H24v12.632h-5.684V5.684zM5.684 24h12.632v-5.684H5.684V24zM18.316 5.684V0H1.895A1.894 1.894 0 0 0 0 1.895v16.421h5.684V5.684h12.632zm-7.207 6.25v-.065c.272-.144.5-.349.687-.617s.279-.595.279-.982c0-.379-.099-.72-.3-1.025a2.05 2.05 0 0 0-.832-.714 2.703 2.703 0 0 0-1.197-.257c-.6 0-1.094.156-1.481.467-.386.311-.65.671-.793 1.078l1.085.452c.086-.249.224-.461.413-.633.189-.172.445-.257.767-.257.33 0 .602.088.816.264a.86.86 0 0 1 .322.703c0 .33-.12.589-.36.778-.24.19-.535.284-.886.284h-.567v1.085h.633c.407 0 .748.109 1.02.327.272.218.407.499.407.843 0 .336-.129.614-.387.832s-.565.327-.924.327c-.351 0-.651-.103-.897-.311-.248-.208-.422-.502-.521-.881l-1.096.452c.178.616.505 1.082.977 1.401.472.319.984.478 1.538.477a2.84 2.84 0 0 0 1.293-.291c.382-.193.684-.458.902-.794.218-.336.327-.72.327-1.149 0-.429-.115-.797-.344-1.105a2.067 2.067 0 0 0-.881-.689zm2.093-1.931l.602.913L15 10.045v5.744h1.187V8.446h-.827l-2.158 1.557zM22.105 0h-3.289v5.184H24V1.895A1.894 1.894 0 0 0 22.105 0zm-3.289 23.5l4.684-4.684h-4.684V23.5zM0 22.105C0 23.152.848 24 1.895 24h3.289v-5.184H0v3.289z"/></svg><em>Google Calendar</em></button><button class="tok" type="button" data-ring="2" data-name="Google Drive" data-cap="Finds the file before you ask." aria-label="Google Drive"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z"/></svg><em>Google Drive</em></button><button class="tok" type="button" data-ring="2" data-name="Google Docs" data-cap="Writes the first draft." aria-label="Google Docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.727 6.727H14V0H4.91c-.905 0-1.637.732-1.637 1.636v20.728c0 .904.732 1.636 1.636 1.636h14.182c.904 0 1.636-.732 1.636-1.636V6.727h-6zm-.545 10.455H7.09v-1.364h7.09v1.364zm2.727-3.273H7.091v-1.364h9.818v1.364zm0-3.273H7.091V9.273h9.818v1.363zM14.727 6h6l-6-6v6z"/></svg><em>Google Docs</em></button><button class="tok" type="button" data-ring="2" data-name="Google Sheets" data-cap="Keeps your numbers and lead lists tidy." aria-label="Google Sheets"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0v6h6l-6-6zm1.363 10.636h-3.41v1.91h3.41v-1.91zm0 3.273h-3.41v1.91h3.41v-1.91zM20.727 6.5v15.864c0 .904-.732 1.636-1.636 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.318v6.5h6.5zm-3.273 2.773H6.545v7.909h10.91v-7.91zm-6.136 4.636H7.91v1.91h3.41v-1.91z"/></svg><em>Google Sheets</em></button><button class="tok" type="button" data-ring="2" data-name="Notion" data-cap="Updates your notes and plans." aria-label="Notion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z"/></svg><em>Notion</em></button><button class="tok" type="button" data-ring="2" data-name="Slack" data-cap="Catches what matters in your channels." aria-label="Slack"><b>#</b><em>Slack</em></button><button class="tok" type="button" data-ring="2" data-name="Google Meet" data-cap="Joins, listens, sends the summary." aria-label="Google Meet"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.53 2.13 0 7.75h5.53zm.398 0v5.62h7.608v3.65l5.47-4.45c-.014-1.22.031-2.25-.025-3.46-.148-1.09-1.287-1.47-2.236-1.36zM23.1 4.32c-.802.295-1.358.995-2.047 1.49-2.506 2.05-4.982 4.12-7.468 6.19 3.025 2.59 6.04 5.18 9.065 7.76 1.218.671 1.428-.814 1.328-1.64v-13a.828.828 0 0 0-.877-.825zM.038 8.15v7.7h5.53v-7.7zm13.577 8.1H6.008v5.62c3.864-.006 7.737.011 11.58-.009 1.02-.07 1.618-1.12 1.468-2.07v-2.51l-5.47-4.68v3.65zm-13.577 0c.02 1.44-.041 2.88.033 4.31.162.948 1.158 1.43 2.047 1.31h3.464v-5.62z"/></svg><em>Google Meet</em></button><button class="tok" type="button" data-ring="2" data-name="Zoom" data-cap="Same, on Zoom." aria-label="Zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.033 14.649H.743a.74.74 0 0 1-.686-.458.74.74 0 0 1 .16-.808L3.19 10.41H1.06A1.06 1.06 0 0 1 0 9.35h3.957c.301 0 .57.18.686.458a.74.74 0 0 1-.161.808L1.51 13.59h2.464c.585 0 1.06.475 1.06 1.06zM24 11.338c0-1.14-.927-2.066-2.066-2.066-.61 0-1.158.265-1.537.686a2.061 2.061 0 0 0-1.536-.686c-1.14 0-2.066.926-2.066 2.066v3.311a1.06 1.06 0 0 0 1.06-1.06v-2.251a1.004 1.004 0 0 1 2.013 0v2.251c0 .586.474 1.06 1.06 1.06v-3.311a1.004 1.004 0 0 1 2.012 0v2.251c0 .586.475 1.06 1.06 1.06zM16.265 12a2.728 2.728 0 1 1-5.457 0 2.728 2.728 0 0 1 5.457 0zm-1.06 0a1.669 1.669 0 1 0-3.338 0 1.669 1.669 0 0 0 3.338 0zm-4.82 0a2.728 2.728 0 1 1-5.458 0 2.728 2.728 0 0 1 5.457 0zm-1.06 0a1.669 1.669 0 1 0-3.338 0 1.669 1.669 0 0 0 3.338 0z"/></svg><em>Zoom</em></button><button class="tok" type="button" data-ring="2" data-name="LinkedIn" data-cap="Finds the right people and drafts the intro." aria-label="LinkedIn"><b>Li</b><em>LinkedIn</em></button><button class="tok" type="button" data-ring="2" data-name="Apollo" data-cap="Enriches leads that fit your customer." aria-label="Apollo"><b>A</b><em>Apollo</em></button><button class="tok" type="button" data-ring="2" data-name="Luma" data-cap="Spots events worth your evening." aria-label="Luma"><b>L</b><em>Luma</em></button><button class="tok" type="button" data-ring="2" data-name="Instagram" data-cap="Watches competitors and trends." aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><em>Instagram</em></button><button class="tok" type="button" data-ring="2" data-name="TikTok" data-cap="Spots what is catching on." aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg><em>TikTok</em></button></div>
+    <div class="ocap" id="ocap"><span class="on">Norah connects with all of them.</span></div>
+    <button class="cont" type="button" aria-label="Continue to the next part"><span class="ring"><svg class="prog" viewBox="0 0 80 80" aria-hidden="true"><circle class="trk" cx="40" cy="40" r="37"/><circle class="bar" cx="40" cy="40" r="37" pathLength="100"/></svg><svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span><span class="lbl">Scroll to continue</span></button>
   </section>
 
-  <section class="close scene" id="access" data-vo="vo/close.mp3">
+  <section class="close slide scene" id="access" data-vo="vo/close.mp3">
     <div class="pre say">And nothing goes out without your yes.</div>
     <h2 class="say">Norah is ready <span class="grad">when you are.</span></h2>
     <a class="btn solid" href="mailto:norah@cliquehub.digital?subject=Norah%20early%20access">Request early access</a>
@@ -479,134 +548,161 @@ function play(){
 }
 function showAll(){build();story.querySelectorAll('.w').forEach(e=>e.classList.add('on'));mk.classList.remove('scatter');after.classList.add('on');statusEl.classList.add('on');}
 if(reduce) showAll(); else setTimeout(play,500);
+const $=q=>document.querySelector(q);
 
 /* ---------- narration engine ----------
-   Sound is on by default. Browsers only allow audio after a first tap, click or key,
-   so the very first interaction anywhere unlocks it. After that, whichever section
-   sits in the middle of the screen speaks, every time you arrive at it. */
+   Sound is on by default; browsers only allow audio after a first tap, click or key,
+   so the first interaction anywhere unlocks it. The section in the middle of the
+   screen speaks, again on every return. Text, once revealed, never hides again. */
 let muted=false; try{muted=localStorage.getItem('norah-muted')==='1';}catch(e){}
 let unlocked=false;
-const sndBtn=document.getElementById('snd'), tap=document.getElementById('taphint');
+const sndBtn=$('#snd'), tap=$('#taphint');
 const amb=new Audio('vo/ambient.mp3'); amb.loop=true; amb.volume=0; amb.preload='auto';
-let player=new Audio(); player.preload='auto';
+let player=new Audio(), progAudio=null;
 const soundOn=()=>unlocked&&!muted;
 function wrapWords(el){ if(el.dataset.wrapped)return; const walk=n=>{[...n.childNodes].forEach(c=>{ if(c.nodeType===3){const f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(t=>{if(!t)return; if(/^\s+$/.test(t))f.appendChild(document.createTextNode(t)); else{const sp=document.createElement('span');sp.className='w';sp.textContent=t;f.appendChild(sp);}});c.replaceWith(f);} else if(c.nodeType===1&&!c.classList.contains('w'))walk(c);});}; walk(el); el.dataset.wrapped=1; }
 document.querySelectorAll('.say,.say-c').forEach(wrapWords);
-let reveals=[];
-function reveal(words,dur){ reveals.forEach(clearTimeout); reveals=[]; const n=words.length; words.forEach((w,i)=>reveals.push(setTimeout(()=>w.classList.add('on'),(i/Math.max(1,n))*dur*0.9))); }
-let seq=0; /* bumps whenever something new starts, so stale callbacks do nothing */
-function stopVoice(){ seq++; player.pause(); vo.pause(); timers.forEach(clearTimeout); document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); }
-function speak(el,words,onEnd){
-  const my=++seq; player.pause(); vo.pause();
-  const src=el.dataset.vo;
-  if(soundOn()&&src){
-    words.forEach(w=>w.classList.remove('on'));
-    player=new Audio(src);
-    player.addEventListener('loadedmetadata',()=>{ if(my===seq) reveal(words,player.duration*1000); },{once:true});
-    player.addEventListener('error',()=>{ if(my===seq) reveal(words,words.length*170); },{once:true});
-    document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); el.classList.add('speaking');
-    player.addEventListener('ended',()=>{ el.classList.remove('speaking'); if(my===seq&&onEnd) setTimeout(()=>{ if(my===seq) onEnd(); },350); },{once:true});
-    player.play().catch(()=>reveal(words,words.length*170));
-  } else {
-    if(!words.some(w=>w.classList.contains('on'))) reveal(words,words.length*170);
-    if(onEnd) setTimeout(()=>{ if(my===seq) onEnd(); },words.length*170+600);
-  }
+/* each element keeps its own timers, so starting one section never freezes another half-typed */
+const timersOf=new Map();
+function clearEl(el){ (timersOf.get(el)||[]).forEach(clearTimeout); timersOf.set(el,[]); }
+function later(el,ms,fn){ timersOf.get(el).push(setTimeout(fn,ms)); }
+function narrate(el,words,dur,delay){
+  delay=delay||0; clearEl(el);
+  const fresh=words.some(w=>!w.classList.contains('on')), n=Math.max(1,words.length);
+  words.forEach((w,i)=>{ const t=delay+(i/n)*dur*.92;
+    if(fresh) later(el,t,()=>w.classList.add('on'));
+    else { later(el,t,()=>w.classList.add('hl')); later(el,t+700,()=>w.classList.remove('hl')); } });
 }
+let seq=0;
+function stopVoice(){ seq++; player.pause(); vo.pause(); document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); }
+function speak(el,words,onEnd,quietMs){
+  const my=++seq; player.pause(); vo.pause();
+  const lead=(+el.dataset.lead||0)*1000, src=el.dataset.vo;
+  const fallback=()=>{ narrate(el,words,words.length*170); if(onEnd) setTimeout(()=>{ if(my===seq) onEnd(); },Math.max(words.length*170+800,quietMs||0)); };
+  if(!(soundOn()&&src)) return fallback();
+  const a=new Audio(src); player=a; progAudio=a;
+  a.addEventListener('loadedmetadata',()=>{ if(my!==seq) return; narrate(el,words,a.duration*1000-lead,lead); el.dispatchEvent(new CustomEvent('voicelen',{detail:a.duration})); },{once:true});
+  document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); el.classList.add('speaking');
+  a.addEventListener('ended',()=>{ el.classList.remove('speaking'); if(my===seq&&onEnd) setTimeout(()=>{ if(my===seq) onEnd(); },500); },{once:true});
+  a.play().catch(()=>{ if(my===seq) fallback(); });
+}
+const ALLT=()=>[...L1,...L2,...L3,['twice.',TW]].map(x=>x[1]);
 function heroSpeak(){
   stopVoice();
-  if(soundOn()&&hasAudio){ if(!window.__an){startAnalyser();window.__an=1;} vo.currentTime=0; vo.play().then(play).catch(play); }
-  else if([...story.querySelectorAll('.w')].some(w=>!w.classList.contains('on'))||!story.querySelector('.w')) (story.querySelector('.w')?showAll():play());
+  const ws=[...story.querySelectorAll('.w')], full=ws.length&&ws.every(w=>w.classList.contains('on'));
+  if(soundOn()&&hasAudio){
+    if(!window.__an){startAnalyser();window.__an=1;}
+    vo.currentTime=0; progAudio=vo;
+    vo.play().then(()=>{ if(full){ const t=ALLT(); ws.forEach((w,i)=>{ setTimeout(()=>w.classList.add('hl'),t[i]); setTimeout(()=>w.classList.remove('hl'),t[i]+700); }); } else play(); }).catch(()=>{ if(!full) play(); });
+  }
 }
-const hatsSec=document.getElementById('hats');
+const hatsSec=$('#hats'), everySec=$('#everywhere'), toolsSec=$('#tools');
 function speakSection(sec){
   if(!sec) return;
   if(sec.id==='hero') return heroSpeak();
   sec.classList.add('in');
   const words=[...sec.querySelectorAll('.say .w')].filter(w=>!w.closest('.hat'));
-  if(sec===hatsSec){ speak(sec,words,()=>speakCard()); }
-  else speak(sec,words);
+  if(sec===hatsSec) return speak(sec,words,()=>speakCard());
+  if(sec===everySec) playChat();
+  if(sec===toolsSec){ sec.addEventListener('voicelen',e=>connect(e.detail*1000),{once:true}); speak(sec,words,null); if(!soundOn()) connect(2600); return; }
+  speak(sec,words);
 }
-/* ambient bed: always under the voice, a touch quieter while she talks */
+/* ambient bed, always under the voice */
 function fadeVol(a,to,done){const from=a.volume,t0=performance.now();(function f(n){const k=Math.min(1,(n-t0)/1200);a.volume=Math.min(1,Math.max(0,from+(to-from)*k));if(k<1)requestAnimationFrame(f);else done&&done();})(t0);}
 function startBed(){ amb.play().then(()=>fadeVol(amb,.16)).catch(()=>{}); }
-function paint(){
-  const on=soundOn();
-  sndBtn.classList.toggle('on',on); sndBtn.setAttribute('aria-pressed',on); sndBtn.querySelector('span').textContent=on?'Sound on':'Sound off';
-  tap.classList.toggle('on',!unlocked&&!muted);
-}
-function unlock(){
-  if(unlocked) return; unlocked=true; paint();
-  ['pointerdown','keydown','touchend'].forEach(t=>removeEventListener(t,unlockEv,true));
-  if(muted) return;
-  startBed(); speakSection(current);
-}
+function paint(){ const on=soundOn(); sndBtn.classList.toggle('on',on); sndBtn.setAttribute('aria-pressed',on); sndBtn.querySelector('span').textContent=on?'Sound on':'Sound off'; tap.classList.toggle('on',!unlocked&&!muted); }
+function unlock(){ if(unlocked) return; unlocked=true; paint(); ['pointerdown','keydown','touchend'].forEach(t=>removeEventListener(t,unlockEv,true)); if(muted) return; startBed(); speakSection(current); }
 function unlockEv(e){ if(e.target.closest&&e.target.closest('#snd')) return; unlock(); }
 ['pointerdown','keydown','touchend'].forEach(t=>addEventListener(t,unlockEv,true));
-/* some browsers allow sound straight away for returning visitors: try it */
 if(!muted){ amb.play().then(()=>{ unlocked=true; amb.volume=0; fadeVol(amb,.16); paint(); }).catch(()=>{}); }
 setTimeout(paint,1600);
 sndBtn.addEventListener('click',()=>{
-  if(!unlocked){ unlocked=true; muted=false; }
-  else muted=!muted;
+  if(!unlocked){ unlocked=true; muted=false; } else muted=!muted;
   try{localStorage.setItem('norah-muted',muted?'1':'0');}catch(e){}
   paint();
-  if(muted){ stopVoice(); fadeVol(amb,0,()=>amb.pause()); }
-  else { startBed(); speakSection(current); }
+  if(muted){ stopVoice(); fadeVol(amb,0,()=>amb.pause()); } else { startBed(); speakSection(current); }
 });
 tap.addEventListener('click',unlock);
 
-/* which section is in the middle of the screen? that one speaks, again on every return */
-const sections=[document.getElementById('hero'),...document.querySelectorAll('.scene')];
+/* ---------- slides: which one is in the middle speaks ---------- */
+const sections=[...document.querySelectorAll('.slide')];
 let current=sections[0], swapT;
-function pickCurrent(){
-  const mid=innerHeight/2; let best=null, bd=1e9;
-  sections.forEach(sc=>{ const r=sc.getBoundingClientRect(); if(r.bottom<innerHeight*.25||r.top>innerHeight*.75) return; const d=r.top<=mid&&r.bottom>=mid?0:Math.min(Math.abs(r.top-mid),Math.abs(r.bottom-mid)); if(d<bd){bd=d;best=sc;} });
-  return best;
-}
-function onScrollSpy(){
-  const sc=pickCurrent(); if(sc) sc.classList.add('in');
-  if(sc===current) return;
-  clearTimeout(swapT);
-  swapT=setTimeout(()=>{ const s2=pickCurrent(); if(!s2||s2===current) return; current=s2; speakSection(current); },450);
-}
-addEventListener('scroll',onScrollSpy,{passive:true});
-/* also reveal sections that are only partly on screen */
-const sio=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:.2});
+function pickCurrent(){ const mid=innerHeight/2; let best=null,bd=1e9;
+  sections.forEach(sc=>{ const r=sc.getBoundingClientRect(); if(r.bottom<innerHeight*.25||r.top>innerHeight*.75) return; const d=r.top<=mid&&r.bottom>=mid?0:Math.min(Math.abs(r.top-mid),Math.abs(r.bottom-mid)); if(d<bd){bd=d;best=sc;} }); return best; }
+addEventListener('scroll',()=>{ const sc=pickCurrent(); if(sc) sc.classList.add('in'); if(sc===current) return; clearTimeout(swapT);
+  swapT=setTimeout(()=>{ const s2=pickCurrent(); if(!s2||s2===current) return; current=s2; speakSection(current); },450); },{passive:true});
+const sio=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:.15});
 document.querySelectorAll('.scene').forEach(sc=>sio.observe(sc));
+/* continue buttons */
+document.querySelectorAll('.cont').forEach(b=>b.addEventListener('click',()=>{ const i=sections.indexOf(b.closest('.slide')); const nx=sections[i+1]; if(nx) nx.scrollIntoView({behavior:'smooth',block:'start'}); }));
+/* the ring around each continue button fills as she speaks */
+(function tick(){ const bar=current&&current.querySelector('.cont .bar'); if(bar){ let p=0; const a=progAudio; if(soundOn()&&a&&!a.paused&&a.duration) p=100-100*a.currentTime/a.duration; bar.style.setProperty('--p',p.toFixed(1)); } requestAnimationFrame(tick); })();
 
-/* ---------- hats deck ---------- */
-const deck=document.getElementById('deck'), hatsEls=[...deck.querySelectorAll('.hat')], dots=[...document.querySelectorAll('#dots button')];
-hatsEls.forEach(h=>h.querySelectorAll('.say-c .w').forEach(w=>w.classList.add('on'))); /* every card readable */
-let active=-1;
-function speakCard(){ const h=hatsEls[active]; if(h) speak(h,[...h.querySelectorAll('.say-c .w')]); }
-function setActive(i){ if(i===active)return; active=i;
-  hatsEls.forEach((h,k)=>h.classList.toggle('active',k===i)); dots.forEach((d,k)=>d.classList.toggle('on',k===i));
-  if(current===hatsSec) speakCard(); }
-function goTo(i){ const n=hatsEls.length; i=(i+n)%n; const h=hatsEls[i]; deck.scrollTo({left:h.offsetLeft-(deck.clientWidth-h.clientWidth)/2,behavior:'smooth'}); }
-function nearest(){ const c=deck.scrollLeft+deck.clientWidth/2; let b=0,bd=1e9; hatsEls.forEach((h,k)=>{const d=Math.abs(h.offsetLeft+h.clientWidth/2-c); if(d<bd){bd=d;b=k;}}); return b; }
-deck.addEventListener('scroll',()=>{ clearTimeout(deck._t); deck._t=setTimeout(()=>setActive(nearest()),140); },{passive:true});
-dots.forEach(d=>d.onclick=()=>goTo(+d.dataset.i));
-/* click: a side card opens that card, the middle card moves on to the next one */
-hatsEls.forEach(h=>h.addEventListener('click',()=>{ if(deck._moved) return; const i=+h.dataset.i; goTo(i===active?active+1:i); }));
-/* follow-the-mouse cursor that says Next or Back */
-const dcur=document.getElementById('dcur'), dcurT=document.getElementById('dcurT');
-let cx=0,cy=0,tx=0,ty=0,raf=0;
-function loop(){ cx+=(tx-cx)*.22; cy+=(ty-cy)*.22; dcur.style.left=cx+'px'; dcur.style.top=cy+'px'; raf=dcur.classList.contains('on')||Math.abs(tx-cx)>.5?requestAnimationFrame(loop):0; }
-deck.addEventListener('pointermove',e=>{ if(e.pointerType!=='mouse')return; tx=e.clientX; ty=e.clientY; if(!dcur.classList.contains('on')){cx=tx;cy=ty;}
-  const card=e.target.closest('.hat'); const i=card?+card.dataset.i:-1;
-  const back=card&&i<active || (!card&&e.clientX<innerWidth/2);
-  dcur.classList.toggle('back',!!back); dcurT.textContent=down&&deck._moved?'Drag':back?'Back':(card&&i>active?'Open':'Next');
-  dcur.classList.add('on'); if(!raf) raf=requestAnimationFrame(loop); });
+/* ---------- she lives where you work: the chat plays once, then stays ---------- */
+let chatDone=false;
+function playChat(){ if(chatDone) return; chatDone=true; everySec.querySelectorAll('.m').forEach((m,i)=>setTimeout(()=>m.classList.add('on'),400+i*1100)); }
+
+/* ---------- hats carousel ---------- */
+const deck=$('#deck'), hatsEls=[...deck.querySelectorAll('.hat')], dots=[...document.querySelectorAll('#dots button')], N=hatsEls.length;
+let active=0;
+function layoutCards(){ const mob=innerWidth<700;
+  hatsEls.forEach((h,k)=>{ let o=k-active; if(o>N/2)o-=N; if(o<-N/2+.5)o+=N; const a=Math.abs(o), W=h.offsetWidth;
+    h.style.transform=`translateX(${o*W*(mob?.86:.66)}px) scale(${1-.1*Math.min(a,2)})`;
+    h.style.opacity=a===0?1:a===1?.5:a===2&&!mob?.16:0; h.style.zIndex=10-a; h.style.filter=a?`blur(${a*1.5}px)`:'none';
+    h.style.pointerEvents=a>1?'none':'auto'; h.classList.toggle('active',a===0); }); }
+function setDot(dur){ dots.forEach((d,k)=>{ d.classList.toggle('on',k===active); d.classList.remove('run'); }); const d=dots[active]; d.style.setProperty('--dur',dur+'s'); void d.offsetWidth; d.classList.add('run'); }
+function speakCard(){ const h=hatsEls[active]; setDot(soundOn()?8:6);
+  h.addEventListener('voicelen',e=>setDot(e.detail+.5),{once:true});
+  speak(h,[...h.querySelectorAll('.say-c .w')],()=>{ if(current===hatsSec) setActive(active+1); },6000); }
+function setActive(i){ active=(i+N)%N; layoutCards(); if(current===hatsSec) speakCard(); else setDot(0.01); }
+dots.forEach(d=>d.onclick=()=>setActive(+d.dataset.i));
+let px=null, moved=false;
+deck.addEventListener('pointerdown',e=>{ px=e.clientX; moved=false; dcur.classList.add('press'); });
+addEventListener('pointerup',e=>{ dcur.classList.remove('press'); if(px===null) return; const dx=e.clientX-px; px=null; if(Math.abs(dx)>40){ moved=true; setActive(active+(dx<0?1:-1)); } });
+hatsEls.forEach((h,k)=>h.addEventListener('click',()=>{ if(moved) return; setActive(k===active?active+1:k); }));
+addEventListener('keydown',e=>{ if(current!==hatsSec) return; if(e.key==='ArrowRight')setActive(active+1); if(e.key==='ArrowLeft')setActive(active-1); });
+addEventListener('resize',layoutCards);
+/* the cursor says Next or Back */
+const dcur=$('#dcur'), dcurT=$('#dcurT'); let cx=0,cy=0,tx=0,ty=0,raf=0;
+function cloop(){ cx+=(tx-cx)*.22; cy+=(ty-cy)*.22; dcur.style.left=cx+'px'; dcur.style.top=cy+'px'; raf=dcur.classList.contains('on')||Math.abs(tx-cx)>.5?requestAnimationFrame(cloop):0; }
+deck.addEventListener('pointermove',e=>{ if(e.pointerType!=='mouse') return; tx=e.clientX; ty=e.clientY; if(!dcur.classList.contains('on')){cx=tx;cy=ty;}
+  const card=e.target.closest('.hat'); const k=card?+card.dataset.i:-1; let o=k-active; if(o>N/2)o-=N; if(o<-N/2+.5)o+=N;
+  const back=card?o<0:e.clientX<innerWidth/2; dcur.classList.toggle('back',back); dcurT.textContent=back?'Back':(card&&o>0?'Open':'Next');
+  dcur.classList.add('on'); if(!raf) raf=requestAnimationFrame(cloop); });
 deck.addEventListener('pointerleave',()=>dcur.classList.remove('on'));
-/* drag to scroll */
-let dx=0,sl=0,down=false;
-deck.addEventListener('pointerdown',e=>{ if(e.pointerType!=='mouse')return; down=true; deck._moved=false; dx=e.clientX; sl=deck.scrollLeft; deck.classList.add('drag'); dcur.classList.add('press'); });
-addEventListener('pointermove',e=>{ if(!down)return; const m=e.clientX-dx; if(Math.abs(m)>4)deck._moved=true; deck.scrollLeft=sl-m; });
-addEventListener('pointerup',()=>{ if(!down)return; down=false; deck.classList.remove('drag'); dcur.classList.remove('press'); if(deck._moved) goTo(nearest()); setTimeout(()=>deck._moved=false,0); });
-addEventListener('keydown',e=>{ const r=deck.getBoundingClientRect(); if(r.top<innerHeight&&r.bottom>0){ if(e.key==='ArrowRight')goTo(active+1); if(e.key==='ArrowLeft')goTo(active-1);} });
-deck.addEventListener('touchstart',()=>document.getElementById('swipe').style.opacity=0,{passive:true,once:true});
-setActive(0);
-requestAnimationFrame(()=>{ deck.scrollLeft=hatsEls[0].offsetLeft-(deck.clientWidth-hatsEls[0].clientWidth)/2; });
+layoutCards(); setDot(0.01);
+
+/* ---------- tools orbit ---------- */
+const orbit=$('#orbit'), toks=[...orbit.querySelectorAll('.tok')], svg=$('#links'), ocap=$('#ocap'), NS='http://www.w3.org/2000/svg';
+const lines=toks.map(()=>{ const l=document.createElementNS(NS,'line'); svg.appendChild(l); return l; });
+const dotsO=toks.map(()=>{ const c=document.createElementNS(NS,'circle'); c.setAttribute('r','2.2'); c.style.opacity=0; svg.appendChild(c); return c; });
+const ring1=toks.filter(t=>t.dataset.ring==='1'), ring2=toks.filter(t=>t.dataset.ring==='2');
+let ang=0, hover=-1, hot=-1, connected=false, cycling=null, orbitVis=false, last=performance.now();
+function frame(now){
+  const dt=now-last; last=now; if(hover<0) ang+=dt*.00005;
+  const W=orbit.clientWidth, H=orbit.clientHeight, cx=W/2, cy=H/2, mob=W<700;
+  const rx1=Math.min(W*.25,H*.36), ry1=H*(mob?.25:.27), rx2=Math.min(W*.47,W/2-30), ry2=H*.45;
+  toks.forEach((t,i)=>{ const r1=t.dataset.ring==='1', list=r1?ring1:ring2, j=list.indexOf(t), n=list.length;
+    const th=(j/n)*Math.PI*2+(r1?ang*1.7:-ang)+(r1?.3:0);
+    const x=cx+Math.cos(th)*(r1?rx1:rx2), y=cy+Math.sin(th)*(r1?ry1:ry2);
+    t.style.transform=`translate(${x}px,${y}px)`;
+    const l=lines[i]; l.setAttribute('x1',cx); l.setAttribute('y1',cy); l.setAttribute('x2',x); l.setAttribute('y2',y);
+    const c=dotsO[i]; if(t.classList.contains('on')){ const ph=((now/1000)*.22+i*.137)%1; c.setAttribute('cx',x+(cx-x)*ph); c.setAttribute('cy',y+(cy-y)*ph); c.style.opacity=(Math.sin(ph*Math.PI)*.9).toFixed(2); } });
+  if(orbitVis) requestAnimationFrame(frame);
+}
+new IntersectionObserver(es=>{ orbitVis=es[0].isIntersecting; if(orbitVis){ last=performance.now(); requestAnimationFrame(frame); } },{rootMargin:'100px'}).observe(orbit);
+function setHot(i){ hot=i; toks.forEach((t,k)=>t.classList.toggle('hot',k===i)); lines.forEach((l,k)=>l.classList.toggle('hot',k===i));
+  const sp=ocap.querySelector('span'); sp.classList.remove('on');
+  setTimeout(()=>{ sp.innerHTML=i<0?'Norah connects with all of them.':`<b>${toks[i].dataset.name}</b>${toks[i].dataset.cap}`; sp.classList.add('on'); },220); }
+function connect(dur){
+  if(connected){ return; } connected=true;
+  const order=toks.map((t,i)=>i).sort((a,b)=>(toks[a].dataset.ring-toks[b].dataset.ring)||a-b), step=Math.max(80,dur*.85/order.length);
+  order.forEach((i,k)=>setTimeout(()=>{ toks[i].classList.add('on'); lines[i].classList.add('on'); },k*step));
+  setTimeout(()=>{ if(!cycling) cycling=setInterval(()=>{ if(hover<0&&current===toolsSec) setHot((hot+1)%toks.length); },2600); },order.length*step+600);
+}
+toks.forEach((t,i)=>{ t.addEventListener('pointerenter',()=>{ hover=i; setHot(i); }); t.addEventListener('pointerleave',()=>{ hover=-1; }); t.addEventListener('click',()=>{ setHot(i); }); });
+/* if someone reaches the tools without sound, they still see everything connect */
+new IntersectionObserver(es=>{ if(es[0].isIntersecting&&!soundOn()) connect(2600); },{threshold:.4}).observe(orbit);
 
 /* ---------- nav, status, reveals, hover light ---------- */
 const nav=document.getElementById('nav');
