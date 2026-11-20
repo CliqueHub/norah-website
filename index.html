@@ -68,6 +68,12 @@ section{min-height:100vh;min-height:100svh;display:flex;align-items:center;paddi
 .wrap{width:100%;max-width:1280px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,80px);align-items:center}
 .copy{display:flex;flex-direction:column;gap:22px;max-width:640px}
 [hidden]{display:none!important}
+.status{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;padding:9px 16px 9px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:13px;color:var(--dim)}
+.status i{width:8px;height:8px;border-radius:50%;background:#5dff9a;animation:ping 2s infinite}
+.status span{color:var(--ink);font-weight:500}
+.status b{font-weight:400;transition:opacity .4s}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(93,255,154,.55)}70%{box-shadow:0 0 0 9px rgba(93,255,154,0)}100%{box-shadow:0 0 0 0 rgba(93,255,154,0)}}
+h1 .roll span{background:linear-gradient(90deg,#fff 0%,#c9c2ff 45%,#ffd3b8 100%);-webkit-background-clip:text;background-clip:text}
 h1,h2{font-weight:600;letter-spacing:-.035em;line-height:1}
 h1{font-size:clamp(44px,6.2vw,96px)}
 h2{font-size:clamp(38px,4.8vw,72px)}
@@ -207,7 +213,7 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
 <main id="top">
   <section class="shape" data-shape="logo" data-side="right" id="hero">
     <div class="wrap"><div class="copy">
-      <div class="mono rv">AI agent for founders</div>
+      <div class="status rv"><i></i><span>Norah is awake</span><b id="stat">Drafting 3 replies for your morning</b></div>
       <h1 class="rv d1">Norah is your<span class="roll-box"><span class="roll"><span>mentor.</span><span>PA.</span><span>co-founder.</span><span>night shift.</span><span>friend.</span><span>mentor.</span></span></span></h1>
       <p class="lede rv d2">One agent for every hat you wear. She lives in your WhatsApp, works through the night, and never sends a thing without your yes.</p>
       <div class="ctas rv d3"><a class="btn solid" href="#access">Get early access</a><a class="btn" href="#night">See how she works</a></div>
@@ -354,7 +360,10 @@ function sample(name){
   for(let i=0;i<N;i++){const j=(i%L)*2;out[i*2]=pts[j]+(Math.random()-.5)*g*.35;out[i*2+1]=pts[j+1]+(Math.random()-.5)*g*.35;}
   return cache[name]=out;
 }
-let cur=null;
+let cur=null, ctrX=0, ctrY=0, ctrS=1;
+const spr=document.createElement('canvas');spr.width=spr.height=16;{const g=spr.getContext('2d');const r=g.createRadialGradient(8,8,0,8,8,8);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.25,'rgba(255,255,255,.55)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,16,16);}
+const tint=c=>{const k=document.createElement('canvas');k.width=k.height=16;const g=k.getContext('2d');g.drawImage(spr,0,0);g.globalCompositeOperation='source-in';g.fillStyle=c;g.fillRect(0,0,16,16);return k;};
+const SPR=[tint('#f4f2ee'),tint('#b9c6ff'),tint('#ffcfae')];
 function place(side){ // returns cx, cy, size in px
   const sz=mobile?Math.min(W*.62,H*.34):Math.min(W*.36,H*.62);
   if(mobile) return [W/2, side==='center'?H*.22:H*.25, side==='center'?sz*.8:sz];
@@ -366,14 +375,14 @@ function setShape(name,side,force){
   cur={name,side};
   if(name==='scatter'){for(let i=0;i<N;i++){P[i*6+4]=Math.random()*W;P[i*6+5]=Math.random()*H;}return;}
   if(name==='dot'||name==='two'){const r=mobile?3:4;for(let i=0;i<N;i++){const a=Math.random()*7,rr=Math.sqrt(Math.random())*r;const dx=name==='two'?(i%2?1:-1)*(mobile?46:80):0;P[i*6+4]=W/2+dx+Math.cos(a)*rr;P[i*6+5]=H/2+60+Math.sin(a)*rr;}return;}
-  const t=sample(name), [cx,cy,sz]=place(side), k=sz/S;
+  const t=sample(name), [cx,cy,sz]=place(side), k=sz/S; ctrX=cx; ctrY=cy; ctrS=sz;
   for(let i=0;i<N;i++){P[i*6+4]=cx+(t[i*2]-S/2)*k;P[i*6+5]=cy+(t[i*2+1]-S/2)*k;}
 }
 
 /* start: particles spread, invisible */
 resize(); addEventListener('resize',resize);
 for(let i=0;i<N;i++){P[i*6]=W/2;P[i*6+1]=H/2+60;}
-let alpha=0, alphaT=0, mx=-9999, my=-9999;
+let alpha=0, alphaT=0, mx=-9999, my=-9999, aura=0;
 addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
 addEventListener('pointerleave',()=>{mx=my=-9999;});
 
@@ -384,24 +393,41 @@ function tick(now){
   const dt=Math.min(2,(now-last)/16.67); last=now;
   alpha+=(alphaT-alpha)*.05*dt;
   ctx.clearRect(0,0,W,H);
+  const t=now*.001, shaped=!!cur&&cur.name!=='scatter'&&cur.name!=='dot'&&cur.name!=='two';
+  aura+=((shaped?1:0)-aura)*.03*dt;
+  if(alpha>.01&&aura>.01){
+    const ar=ctrS*(.95+.08*Math.sin(t*.8));
+    const ax=ctrX+Math.sin(t*.35)*ctrS*.06, ay=ctrY+Math.cos(t*.3)*ctrS*.05;
+    let g=ctx.createRadialGradient(ax-ar*.25,ay-ar*.15,0,ax,ay,ar);
+    g.addColorStop(0,`rgba(120,110,255,${.20*aura*alpha})`);g.addColorStop(.45,`rgba(70,90,200,${.10*aura*alpha})`);g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;ctx.fillRect(ax-ar*1.3,ay-ar*1.3,ar*2.6,ar*2.6);
+    g=ctx.createRadialGradient(ax+ar*.35,ay+ar*.3,0,ax+ar*.35,ay+ar*.3,ar*.7);
+    g.addColorStop(0,`rgba(255,170,120,${.12*aura*alpha})`);g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;ctx.fillRect(ax-ar,ay-ar,ar*2.4,ar*2.4);
+  }
   if(alpha>.01){
     ctx.globalCompositeOperation='lighter';
-    const t=now*.001, sp=reduce?.2:.055, damp=reduce?.6:.84, R=mobile?60:110, R2=R*R;
+    const sp=reduce?.2:.055, damp=reduce?.6:.84, R=mobile?60:110, R2=R*R;
+    const th=reduce?0:Math.sin(t*.45)*.55, cth=Math.cos(th), sth=Math.sin(th), tilt=reduce?0:Math.sin(t*.3)*.12;
+    const band=((t*.18)%1.6-.3)*(ctrS*2.2);
     for(let i=0;i<N;i++){
       const b=i*6; let x=P[b],y=P[b+1],vx=P[b+2],vy=P[b+3];
       const s=seed[i];
-      const tx=P[b+4]+Math.sin(t*.7+s*40)*.6, ty=P[b+5]+Math.cos(t*.6+s*30)*.6;
+      let tx=P[b+4]+Math.sin(t*.7+s*40)*.6, ty=P[b+5]+Math.cos(t*.6+s*30)*.6, depth=0;
+      if(shaped){const lx=tx-ctrX, ly=ty-ctrY, z=lx*sth+(s-.5)*ctrS*.08; const pz=1/(1-z/(ctrS*2.6)); tx=ctrX+lx*cth*pz; ty=ctrY+(ly+z*tilt)*pz; depth=z/ctrS;}
       vx+=(tx-x)*sp*dt; vy+=(ty-y)*sp*dt;
       const dx=x-mx, dy=y-my, d2=dx*dx+dy*dy;
       if(d2<R2){const f=(1-d2/R2)*4.2;const d=Math.sqrt(d2)||1;vx+=dx/d*f;vy+=dy/d*f;}
       vx*=damp; vy*=damp; x+=vx*dt; y+=vy*dt;
       P[b]=x;P[b+1]=y;P[b+2]=vx;P[b+3]=vy;
-      const tw=.75+.25*Math.sin(t*2+s*60);
-      const a=alpha*(cur&&cur.name==='scatter'?.32:.85)*tw;
-      ctx.fillStyle=s<.12?`rgba(255,214,190,${a})`:s<.3?`rgba(190,205,255,${a})`:`rgba(242,241,238,${a})`;
-      const z=s<.08?2.4:1.7; ctx.fillRect(x,y,z,z);
+      const tw=.7+.3*Math.sin(t*2+s*60);
+      let a=alpha*(shaped?.8:.3)*tw*(1+depth*1.2);
+      if(shaped){const d=Math.abs((x-ctrX+ctrS)+(y-ctrY)*.6-band);if(d<ctrS*.18)a*=1+1.6*(1-d/(ctrS*.18));}
+      if(a<=0)continue; ctx.globalAlpha=Math.min(1,a);
+      const z=(s<.08?7:4.2)*(1+depth*.6);
+      ctx.drawImage(SPR[s<.12?2:s<.3?1:0],x-z/2,y-z/2,z,z);
     }
-    ctx.globalCompositeOperation='source-over';
+    ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
   }
   requestAnimationFrame(tick);
 }
@@ -464,6 +490,8 @@ document.getElementById('enterQuiet').addEventListener('click',()=>begin(false))
 skip.addEventListener('click',()=>{vo.pause();finish();});
 soundBtn.addEventListener('click',()=>{if(vo.paused){vo.play().catch(()=>{});soundBtn.classList.remove('off');}else{vo.pause();soundBtn.classList.add('off');}});
 vo.addEventListener('ended',()=>{soundBtn.hidden=true;});
+const STAT=['Drafting 3 replies for your morning','Found 5 new leads that fit','Moved your 3pm, with your yes','Scouting pitch nights in Dubai','Planning tomorrow around you'];let si=0;const statEl=document.getElementById('stat');
+setInterval(()=>{statEl.style.opacity=0;setTimeout(()=>{si=(si+1)%STAT.length;statEl.textContent=STAT[si];statEl.style.opacity=1;},400);},3200);
 let seen=false; try{seen=sessionStorage.getItem('norah-intro')==='1';}catch(e){}
 if(seen){gate.classList.add('out');alphaT=1;finish();}
 })();
