@@ -10,7 +10,7 @@
 <meta property="og:description" content="They say if you want it done right, do it yourself. Now you can, twice.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#050506;--ink:#f2f1ee;--dim:rgba(242,241,238,.64);--faint:rgba(242,241,238,.4);--line:rgba(242,241,238,.12);--card:rgba(255,255,255,.04)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -38,10 +38,10 @@ a{color:inherit;text-decoration:none}
 
 /* intro lines */
 .intro{position:fixed;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;text-align:center;padding:0 6vw}
-.line{font-weight:300;font-size:clamp(34px,5.6vw,84px);line-height:1.12;letter-spacing:-.025em}
+.line{font-family:Syne,Inter,sans-serif;font-weight:400;font-size:clamp(34px,5.6vw,84px);line-height:1.12;letter-spacing:-.025em}
 .line .w{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(14px);transition:opacity .7s ease,filter .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
 .line .w.on{opacity:1;filter:none;transform:none}
-.line b{font-weight:600}
+.line b{font-weight:700;background:linear-gradient(90deg,#fff,#c9c2ff 45%,#ffd3b8);-webkit-background-clip:text;background-clip:text;color:transparent}
 .intro.fade .line{transition:opacity .6s ease,filter .6s ease;opacity:0;filter:blur(12px)}
 .skip{position:fixed;right:clamp(18px,4vw,44px);bottom:clamp(18px,4vh,36px);z-index:45;font-size:12.5px;color:var(--faint);background:none;border:0;cursor:pointer;padding:12px;font-family:Inter,sans-serif;letter-spacing:.04em}
 .skip:hover{color:var(--ink)}
@@ -74,18 +74,18 @@ section{min-height:100vh;min-height:100svh;display:flex;align-items:center;paddi
 .status b{font-weight:400;transition:opacity .4s}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(93,255,154,.55)}70%{box-shadow:0 0 0 9px rgba(93,255,154,0)}100%{box-shadow:0 0 0 0 rgba(93,255,154,0)}}
 h1 .roll span{background:linear-gradient(90deg,#fff 0%,#c9c2ff 45%,#ffd3b8 100%);-webkit-background-clip:text;background-clip:text}
-h1,h2{font-weight:600;letter-spacing:-.035em;line-height:1}
-h1{font-size:clamp(44px,6.2vw,96px)}
-h2{font-size:clamp(38px,4.8vw,72px)}
-h2 .soft,h1 .soft{color:var(--faint)}
+h1,h2{font-family:Syne,Inter,sans-serif;font-weight:700;letter-spacing:-.035em;line-height:1.04}
+h1{font-size:clamp(40px,6.2vw,96px)}
+h2{font-size:clamp(32px,3.9vw,60px)}
+.grad,h2 .soft,h1 .soft{background:linear-gradient(90deg,#fff 0%,#c9c2ff 45%,#ffd3b8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em}
 p.lede{font-size:clamp(16px,1.2vw,18px);line-height:1.6;color:var(--dim);max-width:480px;font-weight:400}
 .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
 
 /* roller */
-.roll-box{height:1.02em;overflow:hidden;display:block}
+.roll-box{height:1.2em;overflow:hidden;display:block;margin-bottom:-.1em}
 .roll{display:flex;flex-direction:column;animation:roll 11s cubic-bezier(.75,0,.2,1) infinite}
-.roll span{height:1.02em;display:block;white-space:nowrap;background:linear-gradient(90deg,#fff,#a9b4c8);-webkit-background-clip:text;background-clip:text;color:transparent}
-@keyframes roll{0%,14%{transform:translateY(0)}17%,31%{transform:translateY(-1.02em)}34%,48%{transform:translateY(-2.04em)}51%,65%{transform:translateY(-3.06em)}68%,82%{transform:translateY(-4.08em)}85%,100%{transform:translateY(-5.1em)}}
+.roll span{height:1.2em;line-height:1.08;display:block;white-space:nowrap;padding-bottom:.12em;background:linear-gradient(90deg,#fff,#a9b4c8);-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes roll{0%,14%{transform:translateY(0)}17%,31%{transform:translateY(-1.2em)}34%,48%{transform:translateY(-2.4em)}51%,65%{transform:translateY(-3.6em)}68%,82%{transform:translateY(-4.8em)}85%,100%{transform:translateY(-6em)}}
 
 /* reveal */
 .rv{opacity:0;transform:translateY(26px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
@@ -157,8 +157,8 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11.5px;border:1px solid var
 /* close */
 .close{min-height:110vh;text-align:center;justify-content:center}
 .close .copy{margin:0 auto;align-items:center;max-width:900px;padding-top:46vh}
-.close h2{font-weight:300;font-size:clamp(30px,4vw,56px);color:var(--dim)}
-.close h2 b{display:block;font-weight:600;color:var(--ink);font-size:clamp(46px,7vw,104px);margin-top:10px}
+.close h2{font-weight:400;font-size:clamp(26px,3.2vw,46px);color:var(--dim)}
+.close h2 b{display:block;font-weight:700;font-size:clamp(40px,6vw,92px);margin-top:12px;background:linear-gradient(90deg,#fff 0%,#c9c2ff 45%,#ffd3b8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em}
 .mail{font-size:13px;color:var(--faint)}
 footer{position:relative;z-index:2;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:28px clamp(20px,4vw,48px);border-top:1px solid var(--line);font-size:12.5px;color:var(--faint)}
 
@@ -333,7 +333,7 @@ let W=0,H=0,DPR=1,mobile=false;
 const N = (innerWidth<860||(navigator.hardwareConcurrency||4)<=4) ? 1800 : 3400;
 const P=new Float32Array(N*6); // x,y,vx,vy,tx,ty
 const seed=new Float32Array(N); for(let i=0;i<N;i++)seed[i]=Math.random();
-function resize(){DPR=Math.min(devicePixelRatio||1,1.5);W=innerWidth;H=innerHeight;mobile=W<860;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);if(cur)setShape(cur.name,cur.side,true);}
+function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;mobile=W<860;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);if(cur)setShape(cur.name,cur.side,true);}
 
 /* ---- shapes, drawn on a 400x400 board then sampled ---- */
 const S=400, off=document.createElement('canvas'); off.width=off.height=S; const o=off.getContext('2d',{willReadFrequently:true});
@@ -361,8 +361,8 @@ function sample(name){
   return cache[name]=out;
 }
 let cur=null, ctrX=0, ctrY=0, ctrS=1;
-const spr=document.createElement('canvas');spr.width=spr.height=16;{const g=spr.getContext('2d');const r=g.createRadialGradient(8,8,0,8,8,8);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.25,'rgba(255,255,255,.55)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,16,16);}
-const tint=c=>{const k=document.createElement('canvas');k.width=k.height=16;const g=k.getContext('2d');g.drawImage(spr,0,0);g.globalCompositeOperation='source-in';g.fillStyle=c;g.fillRect(0,0,16,16);return k;};
+const spr=document.createElement('canvas');spr.width=spr.height=32;{const g=spr.getContext('2d');const r=g.createRadialGradient(16,16,0,16,16,16);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.18,'rgba(255,255,255,.95)');r.addColorStop(.32,'rgba(255,255,255,.35)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,32,32);}
+const tint=c=>{const k=document.createElement('canvas');k.width=k.height=32;const g=k.getContext('2d');g.drawImage(spr,0,0);g.globalCompositeOperation='source-in';g.fillStyle=c;g.fillRect(0,0,32,32);return k;};
 const SPR=[tint('#f4f2ee'),tint('#b9c6ff'),tint('#ffcfae')];
 function place(side){ // returns cx, cy, size in px
   const sz=mobile?Math.min(W*.62,H*.34):Math.min(W*.36,H*.62);
@@ -424,7 +424,7 @@ function tick(now){
       let a=alpha*(shaped?.8:.3)*tw*(1+depth*1.2);
       if(shaped){const d=Math.abs((x-ctrX+ctrS)+(y-ctrY)*.6-band);if(d<ctrS*.18)a*=1+1.6*(1-d/(ctrS*.18));}
       if(a<=0)continue; ctx.globalAlpha=Math.min(1,a);
-      const z=(s<.08?7:4.2)*(1+depth*.6);
+      const z=(s<.08?6.5:4.6)*(1+depth*.6);
       ctx.drawImage(SPR[s<.12?2:s<.3?1:0],x-z/2,y-z/2,z,z);
     }
     ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
@@ -492,8 +492,7 @@ soundBtn.addEventListener('click',()=>{if(vo.paused){vo.play().catch(()=>{});sou
 vo.addEventListener('ended',()=>{soundBtn.hidden=true;});
 const STAT=['Drafting 3 replies for your morning','Found 5 new leads that fit','Moved your 3pm, with your yes','Scouting pitch nights in Dubai','Planning tomorrow around you'];let si=0;const statEl=document.getElementById('stat');
 setInterval(()=>{statEl.style.opacity=0;setTimeout(()=>{si=(si+1)%STAT.length;statEl.textContent=STAT[si];statEl.style.opacity=1;},400);},3200);
-let seen=false; try{seen=sessionStorage.getItem('norah-intro')==='1';}catch(e){}
-if(seen){gate.classList.add('out');alphaT=1;finish();}
+
 })();
 </script>
 </body>
