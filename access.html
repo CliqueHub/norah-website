@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@500;600&family=Almarai:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('norah-theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t;}catch(e){}</script>
 <style>
 :root{--r:22px}
@@ -446,6 +446,10 @@ html,body{overflow-x:clip}
 .card.sent form{display:none}.card.sent .done{display:grid}
 .hp{position:absolute;left:-9999px}
 @media (max-width:900px){.acc{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
+
+.navlinks a.lang{display:inline-flex;align-items:center;font-size:13.5px;color:var(--dim)}
+.navlinks a.lang:hover{color:var(--ink)}
+.navlinks a.lang[lang=ar]{font-family:Almarai,sans-serif;font-weight:700;font-size:14px}
 </style>
 </head>
 <body class="ready">
@@ -454,6 +458,7 @@ html,body{overflow-x:clip}
   <a class="mark" href="./"><svg viewBox="252 168 672 840" width="22" height="28" aria-hidden="true" style=""><path fill="currentColor" fill-rule="evenodd" d="M924 168 L252 168 L252 307 L924 307 Z M924 341 L785 341 L785 475 L924 475 Z M252 1008 L924 1008 L924 509 L785 509 L785 869 L751 869 L751 509 L425 509 L425 835 L540 835 L540 869 L425 869 L391 869 L252 869 Z M562.5 697.5 L562.5 646.5 L613.5 646.5 L613.5 697.5 Z M252 835 L391 835 L391 509 L391 475 L425 475 L751 475 L751 341 L252 341 Z"/></svg><span>Norah</span></a>
   <nav class="navlinks">
     <a href="./">Back to Norah</a>
+    <a class="lang" href="ar-access.html" lang="ar">العربية</a>
     <button class="theme" id="themeBtn" type="button" aria-label="Switch light or dark mode">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
