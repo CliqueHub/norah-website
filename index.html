@@ -488,32 +488,32 @@ html,body{overflow-x:clip}
 
   <section class="sec slide scene" id="hats" data-vo="vo/hats.mp3">
     <div class="shd"><h2 class="say">Norah wears every hat <span class="grad">you do.</span></h2></div>
-    <div class="carousel" id="deck"><article class="hat" data-vo="vo/hat_mentor.mp3" data-lead="1.47" data-i="0">
+    <div class="carousel" id="deck"><article class="hat" data-vo="vo/title_mentor.mp3" data-i="0">
           <div class="hat-top"><span class="mono">01 / 06</span><h3>A mentor</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Your competitor just launched a free tier. Here is what I would do.</span></div>
           <p class="hat-d">She reads the market for you, then tells you what she would do, and why.</p>
           <div class="tags"><span>Competitor deep dive</span><span>Your next move</span></div>
-        </article><article class="hat" data-vo="vo/hat_pa.mp3" data-lead="1.88" data-i="1">
+        </article><article class="hat" data-vo="vo/title_pa.mp3" data-i="1">
           <div class="hat-top"><span class="mono">02 / 06</span><h3>A personal assistant</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">I moved your three o’clock, with your yes. The reply is waiting in Gmail.</span></div>
           <p class="hat-d">Calendar, inbox and follow-ups, handled. Nothing changes without your yes.</p>
           <div class="tags"><span>Calendar</span><span>Gmail draft</span></div>
-        </article><article class="hat" data-vo="vo/hat_cofounder.mp3" data-lead="1.5" data-i="2">
+        </article><article class="hat" data-vo="vo/title_cofounder.mp3" data-i="2">
           <div class="hat-top"><span class="mono">03 / 06</span><h3>A co-founder</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Five new leads fit your ideal customer. Want the notes?</span></div>
           <p class="hat-d">She finds the right people overnight and drafts the first message.</p>
           <div class="tags"><span>5 leads</span><span>Notes drafted</span></div>
-        </article><article class="hat" data-vo="vo/hat_nightshift.mp3" data-lead="1.7" data-i="3">
+        </article><article class="hat" data-vo="vo/title_nightshift.mp3" data-i="3">
           <div class="hat-top"><span class="mono">04 / 06</span><h3>Your night shift</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">While you slept, I drafted two replies, and found a pitch night for Thursday.</span></div>
           <p class="hat-d">Heavy work happens while you sleep, so your morning starts clear.</p>
           <div class="tags"><span>2 replies</span><span>1 pitch night</span></div>
-        </article><article class="hat" data-vo="vo/hat_advisor.mp3" data-lead="1.48" data-i="4">
+        </article><article class="hat" data-vo="vo/title_advisor.mp3" data-i="4">
           <div class="hat-top"><span class="mono">05 / 06</span><h3>An advisor</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">That deadline is in three days. The form is already half filled.</span></div>
           <p class="hat-d">Competitions, grants and deadlines, tracked and prepared.</p>
           <div class="tags"><span>3 days left</span><span>Half filled</span></div>
-        </article><article class="hat" data-vo="vo/hat_friend.mp3" data-lead="1.52" data-i="5">
+        </article><article class="hat" data-vo="vo/title_friend.mp3" data-i="5">
           <div class="hat-top"><span class="mono">06 / 06</span><h3>A friend</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">You have a free Saturday. Sunset by the water?</span></div>
           <p class="hat-d">Birthdays, rest and the weekend. She remembers you have a life.</p>
@@ -719,9 +719,10 @@ function layoutCards(){ const mob=innerWidth<700;
     h.style.pointerEvents=op?'auto':'none';
     h.classList.toggle('active',a===0); h.classList.toggle('bk',a>0); h.classList.toggle('b1',a===1); h.classList.toggle('b2',a===2); h.classList.toggle('rt',o>0); }); }
 function setDot(dur){ dots.forEach((d,k)=>{ d.classList.toggle('on',k===active); d.classList.remove('run'); }); const d=dots[active]; d.style.setProperty('--dur',dur+'s'); void d.offsetWidth; d.classList.add('run'); }
-function speakCard(){ const h=hatsEls[active]; setDot(soundOn()?8:6);
-  h.addEventListener('voicelen',e=>setDot(e.detail+.5),{once:true});
-  speak(h,[...h.querySelectorAll('.say-c .w')],()=>{ if(current===hatsSec) setActive(active+1); },6000); }
+/* each card: Norah says its title only, then the card stays about 2.8s in total */
+const HOLD=2800;
+function speakCard(){ const h=hatsEls[active], k=active, t0=performance.now(); setDot(HOLD/1000);
+  speak(h,[],()=>{ setTimeout(()=>{ if(current===hatsSec&&active===k) setActive(active+1); },Math.max(0,HOLD-(performance.now()-t0))); },HOLD); }
 function setActive(i){ active=(i+N)%N; layoutCards(); if(current===hatsSec) speakCard(); else setDot(0.01); }
 dots.forEach(d=>d.onclick=()=>setActive(+d.dataset.i));
 let px=null, moved=false;
