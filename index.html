@@ -207,7 +207,7 @@ footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;paddin
 
 @media (max-width:900px){
   .hero{grid-template-columns:minmax(0,1fr);padding-top:96px;gap:8px}
-  .mark-slot{order:-1;max-width:260px;width:62%}
+  .mark-slot{order:2;max-width:260px;width:62%}
   .prod{grid-template-columns:minmax(0,1fr)}
   .stage{transform:scale(.82);height:560px}
   .fc{display:none}
@@ -242,7 +242,7 @@ h1.story b{font-weight:700}
 .tool svg{width:17px;height:17px;fill:var(--ink);opacity:.85;flex:none}
 .tool i{width:17px;height:17px;flex:none;display:grid;place-items:center}.tool i::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--g2)}
 @media (max-width:1100px){.tg{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)!important}.mark-slot{order:-1;max-width:150px!important;width:38%}.status{font-size:12px}.status b{display:none}h1.story{min-height:0}.tg{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)!important}.mark-slot{order:2;max-width:150px!important;width:38%;margin-top:28px}.status{font-size:12px}.status b{display:none}h1.story{min-height:0}.tg{grid-template-columns:minmax(0,1fr)}}
 
 /* sound switch */
 .snd{display:flex;align-items:center;gap:9px;padding:9px 14px;border-radius:999px;border:1px solid var(--line2);font-size:12.5px;color:var(--dim)}
@@ -433,6 +433,22 @@ html,body{overflow-x:clip}
 .navlinks a.lang{display:inline-flex;align-items:center;font-size:13.5px;color:var(--dim)}
 .navlinks a.lang:hover{color:var(--ink)}
 .navlinks a.lang[lang=ar]{font-family:Almarai,sans-serif;font-weight:700;font-size:14px}
+/* ---------- phone fixes ---------- */
+@media (max-width:700px){
+  .cont{bottom:14px;gap:8px;font-size:12px}
+  .cont .ring{width:50px;height:50px}
+  .cont .ring::before{inset:-8px}
+  .cont .arw{width:16px;height:16px}
+  #access.slide{min-height:auto!important;padding-bottom:72px}
+  #access .cont{display:none}
+  .stage .fc{display:block;width:168px;padding:10px 12px;font-size:11.5px}
+  .stage .f1{left:-4px;right:auto;top:14%}
+  .stage .f2{right:-4px;left:auto;top:31%}
+  .stage .f3{display:none}
+  .taphint{display:none!important}
+  .navlinks{gap:8px}
+  .mark{margin-right:6px}
+}
 </style>
 </head>
 <body class="ready">
@@ -579,7 +595,7 @@ document.getElementById('themeBtn').addEventListener('click',()=>{
 const vo=document.getElementById('vo'); let hasAudio=true; vo.addEventListener('error',()=>{hasAudio=false;});
 const halo=document.getElementById('halo');
 function startAnalyser(){
-  try{const AC=window.AudioContext||window.webkitAudioContext;const ac=new AC();const src=ac.createMediaElementSource(vo);const an=ac.createAnalyser();an.fftSize=512;src.connect(an);an.connect(ac.destination);const d=new Uint8Array(an.fftSize);let lv=0;
+  try{if(matchMedia('(hover:none)').matches) return; /* phones: play the voice directly, the glow analyser can mute it on iOS */ const AC=window.AudioContext||window.webkitAudioContext;const ac=new AC(); if(ac.state==='suspended') ac.resume();const src=ac.createMediaElementSource(vo);const an=ac.createAnalyser();an.fftSize=512;src.connect(an);an.connect(ac.destination);const d=new Uint8Array(an.fftSize);let lv=0;
     (function read(){if(vo.ended){halo.style.opacity='';return;}an.getByteTimeDomainData(d);let s=0;for(let i=0;i<d.length;i++){const v=(d[i]-128)/128;s+=v*v;}lv+=(Math.min(1,Math.sqrt(s/d.length)*5)-lv)*.25;halo.style.opacity=(.75+lv*.9).toFixed(2);requestAnimationFrame(read);})();
   }catch(e){}
 }
