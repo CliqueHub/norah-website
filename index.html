@@ -608,7 +608,7 @@ const $=q=>document.querySelector(q);
    Sound is on by default; browsers only allow audio after a first tap, click or key,
    so the first interaction anywhere unlocks it. The section in the middle of the
    screen speaks, again on every return. Text, once revealed, never hides again. */
-let muted=false; try{muted=localStorage.getItem('norah-muted')==='1';}catch(e){}
+let muted=false; try{localStorage.removeItem('norah-muted');}catch(e){}
 let unlocked=false;
 const sndBtn=$('#snd'), tap=$('#taphint');
 const amb=new Audio('vo/ambient.mp3'); amb.loop=true; amb.volume=0; amb.preload='auto';
@@ -632,7 +632,7 @@ function narrate(el,words,dur,delay){
     else { later(el,t,()=>w.classList.add('hl')); later(el,t+700,()=>w.classList.remove('hl')); } });
 }
 let seq=0;
-function stopVoice(){ seq++; player.pause(); vo.pause(); document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); }
+function stopVoice(){ seq++; if(!player.muted) player.pause(); vo.pause(); document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); }
 function speak(el,words,onEnd,quietMs){
   const my=++seq; player.pause(); vo.pause();
   const lead=(+el.dataset.lead||0)*1000, src=el.dataset.vo;
@@ -670,15 +670,14 @@ function speakSection(sec){
 function fadeVol(a,to,done){const from=a.volume,t0=performance.now();(function f(n){const k=Math.min(1,(n-t0)/1200);a.volume=Math.min(1,Math.max(0,from+(to-from)*k));if(k<1)requestAnimationFrame(f);else done&&done();})(t0);}
 function startBed(){ amb.play().then(()=>fadeVol(amb,.16)).catch(()=>{}); }
 function paint(){ const on=soundOn(); sndBtn.classList.toggle('on',on); sndBtn.setAttribute('aria-pressed',on); const wt=!unlocked&&!muted; sndBtn.classList.toggle('wait',wt); sndBtn.querySelector('span').textContent=on?'Sound on':(wt?'Tap to listen':'Sound off'); tap.classList.toggle('on',!unlocked&&!muted); }
-function prime(){ try{ if(!player.src){ player.src='vo/hats.mp3'; } player.muted=true; const pr=player.play(); if(pr) pr.then(()=>{ player.pause(); player.muted=false; }).catch(()=>{ player.muted=false; }); }catch(e){ player.muted=false; } }
+function prime(){ try{ if(!player.src){ player.src='vo/hats.mp3'; } player.muted=true; const pr=player.play(); if(pr) pr.then(()=>{ if(player.muted){ player.pause(); player.muted=false; } }).catch(()=>{ player.muted=false; }); }catch(e){ player.muted=false; } }
 function unlock(){ if(unlocked) return; prime(); unlocked=true; paint(); ['pointerdown','keydown','touchend'].forEach(t=>removeEventListener(t,unlockEv,true)); if(muted) return; startBed(); speakSection(current); }
 function unlockEv(e){ if(e.target.closest&&e.target.closest('#snd')) return; unlock(); }
 ['pointerdown','keydown','touchend'].forEach(t=>addEventListener(t,unlockEv,true));
-if(!muted){ amb.play().then(()=>{ unlocked=true; amb.volume=0; fadeVol(amb,.16); paint(); }).catch(()=>{}); }
+if(!muted){ amb.play().then(()=>{ if(unlocked) return; unlocked=true; ['pointerdown','keydown','touchend'].forEach(t=>removeEventListener(t,unlockEv,true)); amb.volume=0; fadeVol(amb,.16); paint(); speakSection(current); }).catch(()=>{}); }
 setTimeout(paint,1600);
 sndBtn.addEventListener('click',()=>{
   if(!unlocked){ prime(); unlocked=true; muted=false; } else muted=!muted;
-  try{localStorage.setItem('norah-muted',muted?'1':'0');}catch(e){}
   paint();
   if(muted){ stopVoice(); fadeVol(amb,0,()=>amb.pause()); } else { startBed(); speakSection(current); }
 });
