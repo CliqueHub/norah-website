@@ -414,6 +414,15 @@ html,body{overflow-x:clip}
 .taphint{left:auto;right:24px;bottom:24px;transform:translateY(20px)}
 .taphint.on{transform:none}
 @media (max-width:700px){.taphint{right:50%;bottom:auto;top:96px;transform:translate(50%,-10px)}.taphint.on{transform:translate(50%,0)}}
+/* card titles match the spoken titles */
+.carousel .hat h3,.carousel .hat.b1 h3,.carousel .hat.b2 h3{white-space:normal;line-height:1.02}
+.carousel .hat.active h3{font-size:clamp(32px,3vw,42px)}
+.carousel .hat.b1 h3{font-size:30px}.carousel .hat.b2 h3{font-size:25px}
+/* gradient words: each word carries its own slice of one shared gradient, so nothing flickers while typing */
+.grad.split{background:none;color:inherit}
+.grad.split .w{background:linear-gradient(92deg,var(--g1) 0%,var(--g2) 50%,var(--g3) 100%);background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding-bottom:.06em}
+.grad.split .w.hl{text-shadow:none;filter:drop-shadow(0 0 12px color-mix(in srgb,var(--g2) 55%,transparent))}
+.close .cta-ea{margin-top:4px;min-height:54px;padding:0 30px;font-size:16px}
 </style>
 </head>
 <body class="ready">
@@ -431,7 +440,7 @@ html,body{overflow-x:clip}
     <button class="theme" id="themeBtn" type="button" aria-label="Switch light or dark mode">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
-    <a class="pill" href="#access">Get early access</a>
+    <a class="pill" href="access.html">Get early access</a>
   </nav>
 </header>
 
@@ -442,7 +451,7 @@ html,body{overflow-x:clip}
       <h1 class="story" id="story" aria-label="They say if you want it done right, do it yourself. Now you can, twice."></h1>
       <div class="after" id="after">
         <p class="lede">Norah is one AI agent for every hat a founder wears. She lives in your WhatsApp, works through the night, and never sends a thing without your yes.</p>
-        <div class="ctas"><a class="btn solid" href="#access">Get early access</a></div>
+        <div class="ctas"><a class="btn solid" href="access.html">Get early access</a></div>
       </div>
     </div>
     <div class="mark-slot" id="slot">
@@ -471,32 +480,32 @@ html,body{overflow-x:clip}
   <section class="sec slide scene" id="hats" data-vo="vo/hats.mp3">
     <div class="shd"><h2 class="say">Norah wears every hat <span class="grad">you do.</span></h2></div>
     <div class="carousel" id="deck"><article class="hat" data-vo="vo/hat_mentor.mp3" data-lead="1.48" data-i="0">
-          <div class="hat-top"><span class="mono">01 / 06</span><h3>Mentor</h3></div>
+          <div class="hat-top"><span class="mono">01 / 06</span><h3>A mentor</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Your competitor just launched a free tier. Here is what I would do.</span></div>
           <p class="hat-d">She reads the market for you, then tells you what she would do, and why.</p>
           <div class="tags"><span>Competitor deep dive</span><span>Your next move</span></div>
         </article><article class="hat" data-vo="vo/hat_pa.mp3" data-lead="1.88" data-i="1">
-          <div class="hat-top"><span class="mono">02 / 06</span><h3>PA</h3></div>
+          <div class="hat-top"><span class="mono">02 / 06</span><h3>A personal assistant</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">I moved your three o’clock, with your yes. The reply is waiting in Gmail.</span></div>
           <p class="hat-d">Calendar, inbox and follow-ups, handled. Nothing changes without your yes.</p>
           <div class="tags"><span>Calendar</span><span>Gmail draft</span></div>
         </article><article class="hat" data-vo="vo/hat_cofounder.mp3" data-lead="1.52" data-i="2">
-          <div class="hat-top"><span class="mono">03 / 06</span><h3>Co-founder</h3></div>
+          <div class="hat-top"><span class="mono">03 / 06</span><h3>A co-founder</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">Five new leads fit your ideal customer. Want the notes?</span></div>
           <p class="hat-d">She finds the right people overnight and drafts the first message.</p>
           <div class="tags"><span>5 leads</span><span>Notes drafted</span></div>
         </article><article class="hat" data-vo="vo/hat_nightshift.mp3" data-lead="1.7" data-i="3">
-          <div class="hat-top"><span class="mono">04 / 06</span><h3>Night shift</h3></div>
+          <div class="hat-top"><span class="mono">04 / 06</span><h3>Your night shift</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">While you slept, I drafted two replies, and found a pitch night for Thursday.</span></div>
           <p class="hat-d">Heavy work happens while you sleep, so your morning starts clear.</p>
           <div class="tags"><span>2 replies</span><span>1 pitch night</span></div>
         </article><article class="hat" data-vo="vo/hat_advisor.mp3" data-lead="1.49" data-i="4">
-          <div class="hat-top"><span class="mono">05 / 06</span><h3>Advisor</h3></div>
+          <div class="hat-top"><span class="mono">05 / 06</span><h3>An advisor</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">That deadline is in three days. The form is already half filled.</span></div>
           <p class="hat-d">Competitions, grants and deadlines, tracked and prepared.</p>
           <div class="tags"><span>3 days left</span><span>Half filled</span></div>
         </article><article class="hat" data-vo="vo/hat_friend.mp3" data-lead="1.3" data-i="5">
-          <div class="hat-top"><span class="mono">06 / 06</span><h3>Friend</h3></div>
+          <div class="hat-top"><span class="mono">06 / 06</span><h3>A friend</h3></div>
           <div class="bubble-n"><span class="from">Norah</span><span class="say-c">You have a free Saturday. Sunset by the water?</span></div>
           <p class="hat-d">Birthdays, rest and the weekend. She remembers you have a life.</p>
           <div class="tags"><span>Saturday</span><span>Sunset</span></div>
@@ -541,12 +550,7 @@ html,body{overflow-x:clip}
   <section class="close slide scene" id="access" data-vo="vo/close.mp3">
     <div class="pre say">And nothing goes out without your yes.</div>
     <h2 class="say">Norah is ready <span class="grad">when you are.</span></h2>
-    <form class="ea" id="ea" novalidate>
-      <input type="text" name="name" placeholder="Your name" autocomplete="name" required>
-      <input type="email" name="email" placeholder="Your email" autocomplete="email" required>
-      <button class="btn solid" type="submit">Request early access</button>
-    </form>
-    <div class="mail-note" id="eaNote">We will only use this to send your invite.</div>
+    <a class="btn solid cta-ea" href="access.html">Get early access</a>
   </section>
 </main>
 <footer><span>Norah · نورا</span><span>Made by Clique AI Limited, Dubai</span></footer>
@@ -604,10 +608,14 @@ let muted=false; try{muted=localStorage.getItem('norah-muted')==='1';}catch(e){}
 let unlocked=false;
 const sndBtn=$('#snd'), tap=$('#taphint');
 const amb=new Audio('vo/ambient.mp3'); amb.loop=true; amb.volume=0; amb.preload='auto';
-let player=new Audio(), progAudio=null;
+const player=new Audio(); player.preload='auto'; let progAudio=null, pAbort=null;
 const soundOn=()=>unlocked&&!muted;
 function wrapWords(el){ if(el.dataset.wrapped)return; const walk=n=>{[...n.childNodes].forEach(c=>{ if(c.nodeType===3){const f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(t=>{if(!t)return; if(/^\s+$/.test(t))f.appendChild(document.createTextNode(t)); else{const sp=document.createElement('span');sp.className='w';sp.textContent=t;f.appendChild(sp);}});c.replaceWith(f);} else if(c.nodeType===1&&!c.classList.contains('w'))walk(c);});}; walk(el); el.dataset.wrapped=1; }
 document.querySelectorAll('.say,.say-c').forEach(wrapWords);
+function alignGrad(){ document.querySelectorAll('.say .grad').forEach(g=>{ g.classList.add('split'); const ws=[...g.querySelectorAll('.w')]; if(!ws.length) return;
+  const L=Math.min(...ws.map(w=>w.offsetLeft)), R=Math.max(...ws.map(w=>w.offsetLeft+w.offsetWidth)), W=Math.max(1,R-L);
+  ws.forEach(w=>{ w.style.backgroundSize=W+'px 100%'; w.style.backgroundPosition=(L-w.offsetLeft)+'px 0'; }); }); }
+alignGrad(); addEventListener('resize',alignGrad); if(document.fonts) document.fonts.ready.then(alignGrad);
 /* each element keeps its own timers, so starting one section never freezes another half-typed */
 const timersOf=new Map();
 function clearEl(el){ (timersOf.get(el)||[]).forEach(clearTimeout); timersOf.set(el,[]); }
@@ -626,11 +634,12 @@ function speak(el,words,onEnd,quietMs){
   const lead=(+el.dataset.lead||0)*1000, src=el.dataset.vo;
   const fallback=()=>{ narrate(el,words,words.length*170); if(onEnd) setTimeout(()=>{ if(my===seq) onEnd(); },Math.max(words.length*170+800,quietMs||0)); };
   if(!(soundOn()&&src)) return fallback();
-  const a=new Audio(src); player=a; progAudio=a;
-  a.addEventListener('loadedmetadata',()=>{ if(my!==seq) return; narrate(el,words,a.duration*1000-lead,lead); el.dispatchEvent(new CustomEvent('voicelen',{detail:a.duration})); },{once:true});
+  if(pAbort) pAbort.abort(); pAbort=new AbortController(); const sig={signal:pAbort.signal};
+  const a=player; progAudio=a; a.src=src;
+  a.addEventListener('loadedmetadata',()=>{ if(my!==seq) return; narrate(el,words,a.duration*1000-lead,lead); el.dispatchEvent(new CustomEvent('voicelen',{detail:a.duration})); },sig);
   document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); el.classList.add('speaking');
-  a.addEventListener('ended',()=>{ el.classList.remove('speaking'); if(my===seq&&onEnd) setTimeout(()=>{ if(my===seq) onEnd(); },500); },{once:true});
-  a.play().catch(()=>{ if(my===seq) fallback(); });
+  a.addEventListener('ended',()=>{ el.classList.remove('speaking'); if(my===seq&&onEnd) setTimeout(()=>{ if(my===seq) onEnd(); },500); },sig);
+  a.muted=false; a.play().catch(()=>{ if(my===seq) fallback(); });
 }
 const ALLT=()=>[...L1,...L2,...L3,['twice.',TW]].map(x=>x[1]);
 function heroSpeak(){
@@ -657,13 +666,14 @@ function speakSection(sec){
 function fadeVol(a,to,done){const from=a.volume,t0=performance.now();(function f(n){const k=Math.min(1,(n-t0)/1200);a.volume=Math.min(1,Math.max(0,from+(to-from)*k));if(k<1)requestAnimationFrame(f);else done&&done();})(t0);}
 function startBed(){ amb.play().then(()=>fadeVol(amb,.16)).catch(()=>{}); }
 function paint(){ const on=soundOn(); sndBtn.classList.toggle('on',on); sndBtn.setAttribute('aria-pressed',on); sndBtn.querySelector('span').textContent=on?'Sound on':'Sound off'; tap.classList.toggle('on',!unlocked&&!muted); }
-function unlock(){ if(unlocked) return; unlocked=true; paint(); ['pointerdown','keydown','touchend'].forEach(t=>removeEventListener(t,unlockEv,true)); if(muted) return; startBed(); speakSection(current); }
+function prime(){ try{ if(!player.src){ player.src='vo/hats.mp3'; } player.muted=true; const pr=player.play(); if(pr) pr.then(()=>{ player.pause(); player.muted=false; }).catch(()=>{ player.muted=false; }); }catch(e){ player.muted=false; } }
+function unlock(){ if(unlocked) return; prime(); unlocked=true; paint(); ['pointerdown','keydown','touchend'].forEach(t=>removeEventListener(t,unlockEv,true)); if(muted) return; startBed(); speakSection(current); }
 function unlockEv(e){ if(e.target.closest&&e.target.closest('#snd')) return; unlock(); }
 ['pointerdown','keydown','touchend'].forEach(t=>addEventListener(t,unlockEv,true));
 if(!muted){ amb.play().then(()=>{ unlocked=true; amb.volume=0; fadeVol(amb,.16); paint(); }).catch(()=>{}); }
 setTimeout(paint,1600);
 sndBtn.addEventListener('click',()=>{
-  if(!unlocked){ unlocked=true; muted=false; } else muted=!muted;
+  if(!unlocked){ prime(); unlocked=true; muted=false; } else muted=!muted;
   try{localStorage.setItem('norah-muted',muted?'1':'0');}catch(e){}
   paint();
   if(muted){ stopVoice(); fadeVol(amb,0,()=>amb.pause()); } else { startBed(); speakSection(current); }
@@ -746,16 +756,6 @@ toks.forEach((t,i)=>{ t.addEventListener('pointerenter',()=>{ hover=i; setHot(i)
 /* if someone reaches the tools without sound, they still see everything connect */
 new IntersectionObserver(es=>{ if(es[0].isIntersecting&&!soundOn()) connect(2600); },{threshold:.4}).observe(orbit);
 
-
-/* early access form: sends to norah@cliquehub.digital */
-const ea=$('#ea'), eaNote=$('#eaNote');
-ea.addEventListener('submit',async e=>{ e.preventDefault();
-  const f=new FormData(ea), name=(f.get('name')||'').trim(), email=(f.get('email')||'').trim();
-  if(!name||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ eaNote.textContent='Please add your name and a valid email.'; return; }
-  const btn=ea.querySelector('button'); btn.disabled=true; btn.textContent='Sending…';
-  try{ const r=await fetch('https://formsubmit.co/ajax/norah@cliquehub.digital',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name,email,_subject:'Norah early access: '+name,_template:'table',_captcha:'false'})});
-    if(!r.ok) throw 0; ea.classList.add('sent'); eaNote.classList.add('ok'); eaNote.textContent='You are on the list, '+name.split(' ')[0]+'. Norah will be in touch.';
-  }catch(err){ btn.disabled=false; btn.textContent='Request early access'; eaNote.innerHTML='Something went wrong. Write to <a href="mailto:norah@cliquehub.digital" style="text-decoration:underline">norah@cliquehub.digital</a> instead.'; } });
 
 /* ---------- nav, status, reveals, hover light ---------- */
 const nav=document.getElementById('nav');
