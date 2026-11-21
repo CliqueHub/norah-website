@@ -365,7 +365,7 @@ html,body{overflow-x:clip}
 .tok em{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-size:12px;color:var(--ink);opacity:0;transition:opacity .3s;pointer-events:none}
 .tok.hot{border-color:var(--g2);box-shadow:0 0 0 6px color-mix(in srgb,var(--g2) 14%,transparent),0 0 40px -6px var(--g2)}
 .tok.hot em{opacity:1}
-.ocap{text-align:center;min-height:48px;margin-top:10px;font-size:16px;color:var(--dim)}
+.ocap{text-align:center;min-height:48px;margin-top:clamp(58px,7vh,72px);font-size:16px;color:var(--dim)}
 .ocap b{color:var(--ink);font-weight:600;margin-right:6px}
 .ocap span{display:inline-block;transition:opacity .4s,transform .4s;opacity:0;transform:translateY(6px)}
 .ocap span.on{opacity:1;transform:none}
