@@ -673,7 +673,8 @@ function heroSpeak(){
   if(soundOn()&&hasAudio){
     if(!window.__an){startAnalyser();window.__an=1;}
     vo.currentTime=0; progAudio=vo;
-    vo.play().then(()=>{ if(full){ const t=ALLT(); ws.forEach((w,i)=>{ setTimeout(()=>w.classList.add('hl'),t[i]); setTimeout(()=>w.classList.remove('hl'),t[i]+700); }); } else play(); }).catch(()=>{ if(!full) play(); });
+    const first=!window.__heroVoiced; window.__heroVoiced=1; /* the first time her voice can play, retype the hero with it so they start together */
+    vo.play().then(()=>{ if(full&&!first){ const t=ALLT(); ws.forEach((w,i)=>{ setTimeout(()=>w.classList.add('hl'),t[i]); setTimeout(()=>w.classList.remove('hl'),t[i]+700); }); } else play(); }).catch(()=>{ if(!full) play(); });
   }
 }
 const hatsSec=$('#hats'), everySec=$('#everywhere'), toolsSec=$('#tools');
