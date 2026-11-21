@@ -423,6 +423,12 @@ html,body{overflow-x:clip}
 .grad.split .w{background:linear-gradient(92deg,var(--g1) 0%,var(--g2) 50%,var(--g3) 100%);background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding-bottom:.06em}
 .grad.split .w.hl{text-shadow:none;filter:drop-shadow(0 0 12px color-mix(in srgb,var(--g2) 55%,transparent))}
 .close .cta-ea{margin-top:4px;min-height:54px;padding:0 30px;font-size:16px}
+.navmid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:26px;font-size:13.5px;color:var(--dim)}
+.navmid a:hover{color:var(--ink)}
+@media (max-width:900px){.navmid{display:none}}
+.snd.wait{color:var(--ink);border-color:var(--g2)}
+.snd.wait b{background:var(--g2);animation:eq 1.6s ease-in-out infinite}
+.snd.wait b:nth-child(2){animation-delay:.25s}.snd.wait b:nth-child(3){animation-delay:.5s}.snd.wait b:nth-child(4){animation-delay:.75s}
 </style>
 </head>
 <body class="ready">
@@ -432,11 +438,10 @@ html,body{overflow-x:clip}
 
 <button class="taphint" id="taphint" type="button"><i><b></b><b></b><b></b><b></b></i>Tap anywhere to hear Norah</button>
 <header class="nav" id="nav">
-  <a class="mark" href="#top"><svg viewBox="252 168 672 840" width="22" height="28" aria-hidden="true" style=""><path fill="currentColor" fill-rule="evenodd" d="M924 168 L252 168 L252 307 L924 307 Z M924 341 L785 341 L785 475 L924 475 Z M252 1008 L924 1008 L924 509 L785 509 L785 869 L751 869 L751 509 L425 509 L425 835 L540 835 L540 869 L425 869 L391 869 L252 869 Z M562.5 697.5 L562.5 646.5 L613.5 646.5 L613.5 697.5 Z M252 835 L391 835 L391 509 L391 475 L425 475 L751 475 L751 341 L252 341 Z"/></svg><span>Norah</span><span class="ar">نورا</span></a>
+  <a class="mark" href="#top"><svg viewBox="252 168 672 840" width="22" height="28" aria-hidden="true" style=""><path fill="currentColor" fill-rule="evenodd" d="M924 168 L252 168 L252 307 L924 307 Z M924 341 L785 341 L785 475 L924 475 Z M252 1008 L924 1008 L924 509 L785 509 L785 869 L751 869 L751 509 L425 509 L425 835 L540 835 L540 869 L425 869 L391 869 L252 869 Z M562.5 697.5 L562.5 646.5 L613.5 646.5 L613.5 697.5 Z M252 835 L391 835 L391 509 L391 475 L425 475 L751 475 L751 341 L252 341 Z"/></svg><span>Norah</span></a>
+  <nav class="navmid"><a href="#hats">What she does</a><a href="#everywhere">Where she works</a><a href="#tools">Tools &amp; Integrations</a></nav>
   <nav class="navlinks">
-    <a href="#hats">Her hats</a><a href="#everywhere">Where she lives</a>
-    <a href="#tools">Connects to</a>
-    <button class="snd" id="snd" type="button" aria-pressed="false" aria-label="Sound"><i><b></b><b></b><b></b><b></b></i><span>Sound off</span></button>
+    <button class="snd" id="snd" type="button" aria-pressed="false" aria-label="Sound"><i><b></b><b></b><b></b><b></b></i><span>Tap to listen</span></button>
     <button class="theme" id="themeBtn" type="button" aria-label="Switch light or dark mode">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
@@ -447,7 +452,6 @@ html,body{overflow-x:clip}
 <main id="top">
   <section class="hero slide" id="hero">
     <div class="copy">
-      <div class="status"><i></i><span>Norah is awake</span><b id="stat">Drafting 3 replies for your morning</b></div>
       <h1 class="story" id="story" aria-label="They say if you want it done right, do it yourself. Now you can, twice."></h1>
       <div class="after" id="after">
         <p class="lede">Norah is one AI agent for every hat a founder wears. She lives in your WhatsApp, works through the night, and never sends a thing without your yes.</p>
@@ -553,7 +557,7 @@ html,body{overflow-x:clip}
     <a class="btn solid cta-ea" href="access.html">Get early access</a>
   </section>
 </main>
-<footer><span>Norah · نورا</span><span>Made by Clique AI Limited, Dubai</span></footer>
+<footer><span>Norah</span><span>Made by Clique AI Limited, Dubai</span></footer>
 
 <script>
 (()=>{
@@ -576,7 +580,7 @@ function startAnalyser(){
 }
 
 /* ---------- hero story ---------- */
-const mk=document.getElementById('mk'), story=document.getElementById('story'), after=document.getElementById('after'), statusEl=document.querySelector('.status');
+const mk=document.getElementById('mk'), story=document.getElementById('story'), after=document.getElementById('after'), statusEl=document.createElement('div');
 const L1=[['They',0],['say',330],['if',1230],['you',1400],['want',1580],['it',1760],['done',1900],['right,',2080]];
 const L2=[['do',2750],['it',2930],['yourself.',3080]];
 const L3=[['Now',4810],['you',5060],['can,',5300]];
@@ -665,7 +669,7 @@ function speakSection(sec){
 /* ambient bed, always under the voice */
 function fadeVol(a,to,done){const from=a.volume,t0=performance.now();(function f(n){const k=Math.min(1,(n-t0)/1200);a.volume=Math.min(1,Math.max(0,from+(to-from)*k));if(k<1)requestAnimationFrame(f);else done&&done();})(t0);}
 function startBed(){ amb.play().then(()=>fadeVol(amb,.16)).catch(()=>{}); }
-function paint(){ const on=soundOn(); sndBtn.classList.toggle('on',on); sndBtn.setAttribute('aria-pressed',on); sndBtn.querySelector('span').textContent=on?'Sound on':'Sound off'; tap.classList.toggle('on',!unlocked&&!muted); }
+function paint(){ const on=soundOn(); sndBtn.classList.toggle('on',on); sndBtn.setAttribute('aria-pressed',on); const wt=!unlocked&&!muted; sndBtn.classList.toggle('wait',wt); sndBtn.querySelector('span').textContent=on?'Sound on':(wt?'Tap to listen':'Sound off'); tap.classList.toggle('on',!unlocked&&!muted); }
 function prime(){ try{ if(!player.src){ player.src='vo/hats.mp3'; } player.muted=true; const pr=player.play(); if(pr) pr.then(()=>{ player.pause(); player.muted=false; }).catch(()=>{ player.muted=false; }); }catch(e){ player.muted=false; } }
 function unlock(){ if(unlocked) return; prime(); unlocked=true; paint(); ['pointerdown','keydown','touchend'].forEach(t=>removeEventListener(t,unlockEv,true)); if(muted) return; startBed(); speakSection(current); }
 function unlockEv(e){ if(e.target.closest&&e.target.closest('#snd')) return; unlock(); }
@@ -760,8 +764,6 @@ new IntersectionObserver(es=>{ if(es[0].isIntersecting&&!soundOn()) connect(2600
 /* ---------- nav, status, reveals, hover light ---------- */
 const nav=document.getElementById('nav');
 addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20),{passive:true});
-const STAT=['Drafting 3 replies for your morning','Found 5 new leads that fit','Moved your 3pm, with your yes','Scouting pitch nights in Dubai','Planning tomorrow around you'];let si=0;const st=document.getElementById('stat');
-setInterval(()=>{st.style.opacity=0;setTimeout(()=>{si=(si+1)%STAT.length;st.textContent=STAT[si];st.style.opacity=1;},400);},3200);
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.2});
 document.querySelectorAll('.cell').forEach((c,i)=>{c.style.transitionDelay=(i%3)*.08+'s';io.observe(c);
   c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px');});});
